@@ -6,12 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "start:server": "json-server db.json"
   },
   "dependencies": {
     "@nextui-org/react": "^2.2.9",
     "chart.js": "^4.4.1",
     "framer-motion": "^10.18.0",
+    "json-server": "^1.0.0-alpha.16",
     "next": "14.0.4",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",

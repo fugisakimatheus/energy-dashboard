@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@nextui-org/react": "^2.2.9",
+    "chart.js": "^4.4.1",
     "framer-motion": "^10.18.0",
     "next": "14.0.4",
     "react": "^18",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18"
   },
   "devDependencies": {

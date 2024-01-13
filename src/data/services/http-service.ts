@@ -1,16 +1,27 @@
-export interface HTTPRequestConfig {
-  path: string
-  params?: Record<string, string | number>
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE'
+export type HTTPRequestCacheOptions = 'default' | 'no-store' | 'no-cache'
+
+export type HTTPRequestMethods = 'GET' | 'POST' | 'PUT' | 'DELETE'
+
+export interface HTTPRequestCacheConfig {
+  cache?: HTTPRequestCacheOptions
+  revalidate?: number
 }
 
-const BASE_URL = 'http://localhost:3000'
+export interface HTTPRequestConfig {
+  path: string
+  method: HTTPRequestMethods
+  params?: Record<string, string | number>
+  cacheConfig?: HTTPRequestCacheConfig
+}
+
+const BASE_URL = 'http://localhost:3333'
 
 export class HTTPService {
   static async request<Response>(config: HTTPRequestConfig): Promise<Response> {
-    const { path, method, params } = config
+    const { path, method, params, cacheConfig } = config
 
     let url = `${BASE_URL}${path}`
+
     if (params) {
       const parsedParams = Object.entries(params)
         .filter(([_key, value]) => !!value)
@@ -21,7 +32,14 @@ export class HTTPService {
       url += `?${paramsString.toString()}`
     }
 
-    const response = await fetch(url, { method })
+    const response = await fetch(url, {
+      method,
+      cache: cacheConfig?.cache,
+      next: {
+        revalidate: cacheConfig?.revalidate,
+        tags: [path.replace('/', '')],
+      },
+    })
     if (!response.ok) {
       throw new Error('Error fetching data', { cause: response.status })
     }

@@ -9,7 +9,7 @@
     "lint": "next lint",
     "fix:lint": "eslint --fix src/**/*.{js,ts,json}",
     "prettify": "prettier --write src/**/*.{js,ts,json} --config ./.prettierrc",
-    "start:server": "json-server db.json"
+    "start:back-server": "json-server db.json --port 3333"
   },
   "dependencies": {
     "@nextui-org/react": "^2.2.9",

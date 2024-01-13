@@ -1,5 +1,6 @@
 import { MeasurementService } from '@/data/services/measurements-service'
 import HistoricalMeasurementChartWrapper from './chart'
+import Card from '@/components/dump-components/card'
 
 type LastWeekConsumptionChartData = {
   label: string
@@ -26,7 +27,7 @@ export default async function HistoricalMeasurementChart() {
   )
 
   return (
-    <div className="w-full h-full px-4 pt-8 pb-8 bg-white shadow-sm border border-gray-200 rounded-lg">
+    <Card>
       <div className="px-4 mb-4 flex flex-col">
         <span className="font-semibold text-lg text-[#374151]">
           Medição Histórica (Última Semana)
@@ -38,6 +39,6 @@ export default async function HistoricalMeasurementChart() {
           data={lastWeekData}
         ></HistoricalMeasurementChartWrapper>
       </div>
-    </div>
+    </Card>
   )
 }

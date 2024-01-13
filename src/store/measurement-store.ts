@@ -6,32 +6,67 @@ type MeasurementStore = {
   hourlyMeasurements: {
     data: Measurement[]
   }
+  isLoadingHourlyMeasurements: boolean
   getHourlyMeasurements: (day: string, month: string, year: string) => void
   paginatedMeasurements: {
     data: Measurement[]
     page: number
     totalItems: number
-    perPage: number
   }
+  isLoadingPaginatedMeasurements: boolean
+  setPage: (page: number) => void
   getPaginatedMeasurements: () => void
 }
 
-export const useMeasurementStore = create<MeasurementStore>()(set => ({
+export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
   hourlyMeasurements: { data: [] },
+  isLoadingHourlyMeasurements: false,
   getHourlyMeasurements: async (day: string, month: string, year: string) => {
     try {
+      set(state => ({ ...state, isLoadingHourlyMeasurements: true }))
       const data = await MeasurementService.search(
         { filters: { day, month, year } },
-        { cache: 'no-cache' },
+        { cache: 'no-store' },
       )
-      set(state => ({ ...state, hourlyMeasurements: { data } }))
-    } catch (error) {}
+      set(state => ({
+        ...state,
+        hourlyMeasurements: { ...state.hourlyMeasurements, data },
+      }))
+    } catch (error) {
+    } finally {
+      set(state => ({ ...state, isLoadingHourlyMeasurements: false }))
+    }
   },
   paginatedMeasurements: {
     data: [],
     page: 1,
     totalItems: 0,
-    perPage: 10,
   },
-  getPaginatedMeasurements: () => {},
+  isLoadingPaginatedMeasurements: false,
+  setPage: (page: number) => {
+    set(state => ({
+      ...state,
+      paginatedMeasurements: { ...state.paginatedMeasurements, page },
+    }))
+  },
+  getPaginatedMeasurements: async () => {
+    const { page } = get().paginatedMeasurements
+    try {
+      set(state => ({ ...state, isLoadingPaginatedMeasurements: true }))
+      const response = await MeasurementService.getPaginated({
+        pagination: { page },
+      })
+      set(state => ({
+        ...state,
+        paginatedMeasurements: {
+          ...state.paginatedMeasurements,
+          data: response.data,
+          totalItems: response.items,
+        },
+      }))
+    } catch (error) {
+    } finally {
+      set(state => ({ ...state, isLoadingPaginatedMeasurements: false }))
+    }
+  },
 }))

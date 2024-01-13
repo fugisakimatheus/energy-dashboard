@@ -28,7 +28,6 @@ export interface GetMeasurementsSort {
 
 export interface GetMeasurementsPagination {
   page: number
-  per_page: number
 }
 
 export interface GetMeasurementsParams {

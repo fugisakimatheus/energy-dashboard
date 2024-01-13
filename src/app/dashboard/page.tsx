@@ -1,6 +1,7 @@
 import AnualConsumptionChart from '@/components/wired-components/dashboard/charts/anual-consumption-chart'
 import HistoricalMeasurementChart from '@/components/wired-components/dashboard/charts/historical-measurement-chart'
 import HourlyMeasurementChart from '@/components/wired-components/dashboard/charts/hourly-measurement-chart'
+import MeasurementsTable from '@/components/wired-components/dashboard/measurements-table'
 
 export default async function Home() {
   return (
@@ -21,9 +22,10 @@ export default async function Home() {
             <HourlyMeasurementChart />
           </div>
         </div>
-        <div>
-          <HistoricalMeasurementChart />
-        </div>
+
+        <HistoricalMeasurementChart />
+
+        <MeasurementsTable />
       </div>
     </div>
   )

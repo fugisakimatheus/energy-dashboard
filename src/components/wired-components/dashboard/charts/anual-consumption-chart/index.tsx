@@ -2,6 +2,7 @@ import { MeasurementService } from '@/data/services/measurements-service'
 import { generateMonthNumbers, getMonthName } from '@/utils/date'
 import { groupMeasurementsConsumptionByMonths } from '@/utils/measurement'
 import AnualConsumptionChartWrapper from './chart'
+import Card from '@/components/dump-components/card'
 
 type AnualConsumptionChartData = {
   label: string
@@ -55,7 +56,7 @@ export default async function AnualConsumptionChart() {
   )
 
   return (
-    <div className="w-full h-full px-4 pt-8 pb-12 bg-white shadow-sm border border-gray-200 rounded-lg">
+    <Card>
       <div className="px-4 mb-6 flex flex-col">
         <span className="font-semibold text-lg text-[#374151]">
           Consumo Anual ({lastYear} / {currentYear})
@@ -73,6 +74,6 @@ export default async function AnualConsumptionChart() {
           currentYear={currentYear}
         />
       </div>
-    </div>
+    </Card>
   )
 }

@@ -1,5 +1,7 @@
 'use client'
 
+import Card from '@/components/dump-components/card'
+import Select from '@/components/dump-components/select'
 import { useMeasurementStore } from '@/store/measurement-store'
 import {
   generateMonthDays,
@@ -8,7 +10,6 @@ import {
 } from '@/utils/date'
 import { useEffect, useState } from 'react'
 import HourlyMeasurementChartWrapper from './chart'
-import Select from '@/components/dump-components/select'
 
 export default function HourlyMeasurementChart() {
   const [selectedDay, setSelectedDay] = useState<string>('31')
@@ -27,12 +28,12 @@ export default function HourlyMeasurementChart() {
   }, [getHourlyMeasurements, selectedDay, selectedMonth, selectedYear])
 
   const hourlyData = hourlyMeasurements.map(measurement => ({
-    label: `${measurement.day}/${measurement.month} ${measurement.hour}h`,
+    label: `${measurement.day}/${measurement.month} às ${measurement.hour}h`,
     value: measurement.consumption,
   }))
 
   return (
-    <div className="w-full h-full px-4 pt-8 pb-6 bg-white shadow-sm border border-gray-200 rounded-lg">
+    <Card>
       <div className="px-4 mb-6 flex flex-col">
         <span className="font-semibold text-lg text-[#374151]">
           Medição Horária (Por Dia)
@@ -42,11 +43,14 @@ export default function HourlyMeasurementChart() {
       <div className="px-4 w-full flex flex-row items-center mb-6 gap-3 sm:gap-5 md:gap-16">
         <Select
           defaultSelectedKeys={[selectedDay]}
+          disallowEmptySelection
           onChange={e => setSelectedDay(e.target.value)}
           options={generateMonthDays().map(day => ({ label: day, value: day }))}
+          aria-label="Day select field"
         />
         <Select
           defaultSelectedKeys={[selectedMonth]}
+          disallowEmptySelection
           onChange={e => setSelectedMonth(e.target.value)}
           options={generateMonthsWithNames().map(
             ({ monthName, monthNumber }) => ({
@@ -54,14 +58,17 @@ export default function HourlyMeasurementChart() {
               value: monthNumber,
             }),
           )}
+          aria-label="Month select field"
         />
         <Select
           defaultSelectedKeys={[selectedYear]}
+          disallowEmptySelection
           onChange={e => setSelectedYear(e.target.value)}
           options={getAvailableYears().map(year => ({
             label: year,
             value: year,
           }))}
+          aria-label="Year select field"
         />
       </div>
 
@@ -73,6 +80,6 @@ export default function HourlyMeasurementChart() {
           data={hourlyData}
         />
       </div>
-    </div>
+    </Card>
   )
 }

@@ -26,8 +26,18 @@ export default async function HistoricalMeasurementChart() {
   )
 
   return (
-    <HistoricalMeasurementChartWrapper
-      data={lastWeekData}
-    ></HistoricalMeasurementChartWrapper>
+    <div className="w-full h-full px-4 pt-8 pb-8 bg-white shadow-sm border border-gray-200 rounded-lg">
+      <div className="px-4 mb-4 flex flex-col">
+        <span className="font-semibold text-lg text-[#374151]">
+          Medição Histórica (Última Semana)
+        </span>
+      </div>
+
+      <div className="w-full h-full max-h-[290px] px-2">
+        <HistoricalMeasurementChartWrapper
+          data={lastWeekData}
+        ></HistoricalMeasurementChartWrapper>
+      </div>
+    </div>
   )
 }

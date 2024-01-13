@@ -55,10 +55,24 @@ export default async function AnualConsumptionChart() {
   )
 
   return (
-    <AnualConsumptionChartWrapper
-      data={anualData}
-      lastYear={lastYear}
-      currentYear={currentYear}
-    />
+    <div className="w-full h-full px-4 pt-8 pb-12 bg-white shadow-sm border border-gray-200 rounded-lg">
+      <div className="px-4 mb-6 flex flex-col">
+        <span className="font-semibold text-lg text-[#374151]">
+          Consumo Anual ({lastYear} / {currentYear})
+        </span>
+        <span className="text-[#9CA3AF] font-medium">
+          Comparativo mensal do consumo realizado nos anos de {lastYear} e{' '}
+          {currentYear}.
+        </span>
+      </div>
+
+      <div className="w-full h-full max-h-[330px] px-2">
+        <AnualConsumptionChartWrapper
+          data={anualData}
+          lastYear={lastYear}
+          currentYear={currentYear}
+        />
+      </div>
+    </div>
   )
 }

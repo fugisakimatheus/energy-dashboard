@@ -10,3 +10,20 @@ export const getMonthName = (monthNumber: number) => {
 export const generateMonthNumbers = () => {
   return Array.from({ length: 12 }, (_, index) => index + 1)
 }
+
+export const generateMonthDays = () => {
+  return Array.from({ length: 31 }, (_, index) => index + 1).map(day =>
+    String(day),
+  )
+}
+
+export const generateMonthsWithNames = () => {
+  return generateMonthNumbers().map(monthNumber => ({
+    monthNumber: String(monthNumber),
+    monthName: getMonthName(monthNumber),
+  }))
+}
+
+export const getAvailableYears = () => {
+  return ['2021', '2022']
+}

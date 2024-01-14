@@ -5,3 +5,10 @@
 html, body {
   background-color: #F7FAFC !important;
 }
+
+body {
+  max-width: 1440px !important;
+  margin: 0 auto !important;
+  float: none !important;
+  overflow: auto;
+}

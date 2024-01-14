@@ -5,7 +5,7 @@ export default async function HistoricalMeasurementChartLoading() {
   return (
     <Card>
       <div className="px-4 mb-4 flex flex-col">
-        <div className="h-[14px] w-[312px] bg-gray-200"></div>
+        <div className="h-[14px] w-[312px] bg-gray-200 rounded-sm"></div>
       </div>
 
       <div className="flex flex-row justify-center items-center w-full h-[290px] px-2">

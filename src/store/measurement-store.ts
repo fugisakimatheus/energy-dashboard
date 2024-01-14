@@ -2,47 +2,49 @@ import { Measurement } from '@/data/models/measurement/measurement-model'
 import { MeasurementService } from '@/data/services/measurements-service'
 import { create } from 'zustand'
 
+type LoadingStatus = 'pristine' | 'loading' | 'success' | 'error'
+
 type MeasurementStore = {
   hourlyMeasurements: {
     data: Measurement[]
   }
-  isLoadingHourlyMeasurements: boolean
+  hourlyMeasurementsStatus: LoadingStatus
   getHourlyMeasurements: (day: string, month: string, year: string) => void
   paginatedMeasurements: {
     data: Measurement[]
     page: number
     totalItems: number
   }
-  isLoadingPaginatedMeasurements: boolean
+  paginatedMeasurementsStatus: LoadingStatus
   setPage: (page: number) => void
   getPaginatedMeasurements: () => void
 }
 
 export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
   hourlyMeasurements: { data: [] },
-  isLoadingHourlyMeasurements: false,
+  hourlyMeasurementsStatus: 'pristine',
   getHourlyMeasurements: async (day: string, month: string, year: string) => {
-    try {
-      set(state => ({ ...state, isLoadingHourlyMeasurements: true }))
-      const data = await MeasurementService.search(
-        { filters: { day, month, year } },
-        { cache: 'no-store' },
-      )
+    set(state => ({ ...state, hourlyMeasurementsStatus: 'loading' }))
+    const response = await MeasurementService.search(
+      { filters: { day, month, year } },
+      { cache: 'no-store' },
+    )
+    if (typeof response !== 'string') {
       set(state => ({
         ...state,
-        hourlyMeasurements: { ...state.hourlyMeasurements, data },
+        hourlyMeasurements: { ...state.hourlyMeasurements, data: response },
+        hourlyMeasurementsStatus: 'success',
       }))
-    } catch (error) {
-    } finally {
-      set(state => ({ ...state, isLoadingHourlyMeasurements: false }))
+      return
     }
+    set(state => ({ ...state, hourlyMeasurementsStatus: 'error' }))
   },
   paginatedMeasurements: {
     data: [],
     page: 1,
     totalItems: 17520,
   },
-  isLoadingPaginatedMeasurements: false,
+  paginatedMeasurementsStatus: 'pristine',
   setPage: (page: number) => {
     set(state => ({
       ...state,
@@ -51,21 +53,22 @@ export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
   },
   getPaginatedMeasurements: async () => {
     const { page } = get().paginatedMeasurements
-    try {
-      set(state => ({ ...state, isLoadingPaginatedMeasurements: true }))
-      const response = await MeasurementService.search({
-        pagination: { page },
-      })
+    set(state => ({ ...state, paginatedMeasurementsStatus: 'loading' }))
+
+    const response = await MeasurementService.search({
+      pagination: { page },
+    })
+    if (typeof response !== 'string') {
       set(state => ({
         ...state,
+        paginatedMeasurementsStatus: 'success',
         paginatedMeasurements: {
           ...state.paginatedMeasurements,
           data: response,
         },
       }))
-    } catch (error) {
-    } finally {
-      set(state => ({ ...state, isLoadingPaginatedMeasurements: false }))
+      return
     }
+    set(state => ({ ...state, paginatedMeasurementsStatus: 'error' }))
   },
 }))

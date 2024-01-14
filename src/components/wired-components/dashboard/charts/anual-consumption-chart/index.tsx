@@ -3,6 +3,9 @@ import { MeasurementService } from '@/data/services/measurements-service'
 import { generateMonthNumbers, getMonthName } from '@/utils/date'
 import { groupMeasurementsConsumptionByMonths } from '@/utils/measurement'
 import AnualConsumptionChartWrapper from './chart'
+import AnualConsumptionChartError from './error'
+import AnualConsumptionChartHeader from './header'
+import AnualConsumptionChartNoData from './no-data'
 
 type AnualConsumptionChartData = {
   label: string
@@ -25,6 +28,20 @@ export default async function AnualConsumptionChart() {
     { filters: { year: currentYear } },
     { cache: 'no-store' },
   )
+
+  if (
+    typeof lastYearMeasurements === 'string' ||
+    typeof currentYearMeasurements === 'string'
+  ) {
+    return <AnualConsumptionChartError />
+  }
+
+  if (
+    lastYearMeasurements.length === 0 &&
+    currentYearMeasurements.length === 0
+  ) {
+    return <AnualConsumptionChartNoData />
+  }
 
   const lastYearConsumptions =
     groupMeasurementsConsumptionByMonths(lastYearMeasurements)
@@ -57,15 +74,7 @@ export default async function AnualConsumptionChart() {
 
   return (
     <Card>
-      <div className="px-4 mb-6 flex flex-col">
-        <span className="font-semibold text-lg text-[#374151]">
-          Consumo Anual ({lastYear} / {currentYear})
-        </span>
-        <span className="text-[#9CA3AF] font-medium">
-          Comparativo mensal do consumo realizado nos anos de {lastYear} e{' '}
-          {currentYear}.
-        </span>
-      </div>
+      <AnualConsumptionChartHeader />
 
       <div className="w-full h-full max-h-[330px] px-2">
         <AnualConsumptionChartWrapper

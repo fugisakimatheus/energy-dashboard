@@ -24,7 +24,9 @@ export default function ChartLoading(props: ChartLoadingProps) {
         <div
           key={number}
           style={{ height: `${generateRandomNumber()}px` }}
-          className={`${getClassByColumnNumber(number)} w-[15px] bg-gray-200`}
+          className={`${getClassByColumnNumber(
+            number,
+          )} w-[15px] bg-gray-200 rounded-sm`}
         ></div>
       ))}
     </div>

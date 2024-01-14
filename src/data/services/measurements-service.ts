@@ -3,7 +3,6 @@ import {
   GetMeasurementsParams,
   GetMeasurementsSort,
 } from '../models/measurement/measurement-request-model'
-import { GetMeasurementsResponse } from '../models/measurement/measurement-response-model'
 import { HTTPRequestCacheConfig, HTTPService } from './http-service'
 
 export class MeasurementService {
@@ -14,10 +13,11 @@ export class MeasurementService {
       .join(',')
     return _sort
   }
+
   static async search(
     params: GetMeasurementsParams = {},
     config?: HTTPRequestCacheConfig,
-  ): Promise<Measurement[]> {
+  ): Promise<Measurement[] | string> {
     const { sorts = [], pagination, filters } = params
 
     const _page = pagination?.page ?? ''
@@ -32,7 +32,7 @@ export class MeasurementService {
       })
       return response
     } catch (error) {
-      return []
+      return 'Erro ao carregar dados'
     }
   }
 }

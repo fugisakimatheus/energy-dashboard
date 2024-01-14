@@ -1,6 +1,9 @@
 import Card from '@/components/dump-components/card'
 import { MeasurementService } from '@/data/services/measurements-service'
 import HistoricalMeasurementChartWrapper from './chart'
+import HistoricalMeasurementChartHeader from './header'
+import HistoricalMeasurementChartError from './error'
+import HistoricalMeasurementChartNoData from './no-data'
 
 type LastWeekConsumptionChartData = {
   label: string
@@ -19,6 +22,14 @@ export default async function HistoricalMeasurementChart() {
     },
   })
 
+  if (typeof lastWeekMeasurements === 'string') {
+    return <HistoricalMeasurementChartError />
+  }
+
+  if (lastWeekMeasurements.length === 0) {
+    return <HistoricalMeasurementChartNoData />
+  }
+
   const lastWeekData: LastWeekConsumptionChartData[] = lastWeekMeasurements.map(
     ({ day, month, consumption }) => ({
       label: `${day}/${month}`,
@@ -28,11 +39,7 @@ export default async function HistoricalMeasurementChart() {
 
   return (
     <Card>
-      <div className="px-4 mb-4 flex flex-col">
-        <span className="font-semibold text-lg text-[#374151]">
-          Medição Histórica (Última Semana)
-        </span>
-      </div>
+      <HistoricalMeasurementChartHeader />
 
       <div className="w-full h-full max-h-[290px] px-2">
         <HistoricalMeasurementChartWrapper

@@ -18,50 +18,21 @@ export class MeasurementService {
     params: GetMeasurementsParams = {},
     config?: HTTPRequestCacheConfig,
   ): Promise<Measurement[]> {
-    const { sorts = [], filters } = params
-
-    const _sort = this.buildSortParams(sorts)
-
-    try {
-      const response = await HTTPService.request<Measurement[]>({
-        path: '/measurements',
-        method: 'GET',
-        params: { _sort, ...filters },
-        cacheConfig: config,
-      })
-      return response
-    } catch (error) {
-      return []
-    }
-  }
-
-  static async getPaginated(
-    params: GetMeasurementsParams = {},
-    config?: HTTPRequestCacheConfig,
-  ): Promise<GetMeasurementsResponse> {
     const { sorts = [], pagination, filters } = params
 
     const _page = pagination?.page ?? ''
     const _sort = this.buildSortParams(sorts)
 
     try {
-      const response = await HTTPService.request<GetMeasurementsResponse>({
+      const response = await HTTPService.request<Measurement[]>({
         path: '/measurements',
         method: 'GET',
-        params: { _sort, _page, ...filters },
+        params: { _page, _sort, ...filters },
         cacheConfig: config,
       })
       return response
     } catch (error) {
-      return {
-        first: 1,
-        items: 0,
-        last: 1,
-        pages: 1,
-        prev: null,
-        next: 0,
-        data: [],
-      }
+      return []
     }
   }
 }

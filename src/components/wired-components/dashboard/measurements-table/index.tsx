@@ -46,7 +46,7 @@ export default function MeasurementsTable() {
   }
 
   return (
-    <Card>
+    <Card fitContent>
       <div className="px-4 w-full flex flex-row items-center justify-between gap-6 mb-4">
         <span className="text-[#374151] font-bold text-lg">Medições</span>
       </div>
@@ -81,7 +81,7 @@ export default function MeasurementsTable() {
             </TableColumn>
           </TableHeader>
           <TableBody>
-            {measurements.map(measurement => (
+            {(measurements || []).map(measurement => (
               <TableRow
                 key={measurement.id}
                 className="border-b border-gray-200 last:border-none h-14"

@@ -1,6 +1,6 @@
+import Card from '@/components/dump-components/card'
 import { MeasurementService } from '@/data/services/measurements-service'
 import HistoricalMeasurementChartWrapper from './chart'
-import Card from '@/components/dump-components/card'
 
 type LastWeekConsumptionChartData = {
   label: string

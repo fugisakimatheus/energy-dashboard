@@ -10,6 +10,7 @@ import {
 } from '@/utils/date'
 import { useEffect, useState } from 'react'
 import HourlyMeasurementChartWrapper from './chart'
+import ChartLoading from '@/components/dump-components/chart-loading'
 
 export default function HourlyMeasurementChart() {
   const [selectedDay, setSelectedDay] = useState<string>('31')
@@ -18,6 +19,9 @@ export default function HourlyMeasurementChart() {
 
   const getHourlyMeasurements = useMeasurementStore(
     state => state.getHourlyMeasurements,
+  )
+  const isLoadingHourlyMeasurements = useMeasurementStore(
+    state => state.isLoadingHourlyMeasurements,
   )
   const hourlyMeasurements = useMeasurementStore(
     state => state.hourlyMeasurements.data,
@@ -72,14 +76,20 @@ export default function HourlyMeasurementChart() {
         />
       </div>
 
-      <div className="w-full h-full max-h-[320px] px-2">
-        <HourlyMeasurementChartWrapper
-          maxFlex={110}
-          minFlex={90}
-          flatConsumption={100}
-          data={hourlyData}
-        />
-      </div>
+      {isLoadingHourlyMeasurements ? (
+        <div className="pt-7 w-full h-full items-center justify-center px-2">
+          <ChartLoading colsNumber={15} />
+        </div>
+      ) : (
+        <div className="w-full h-full max-h-[320px] px-2">
+          <HourlyMeasurementChartWrapper
+            maxFlex={110}
+            minFlex={90}
+            flatConsumption={100}
+            data={hourlyData}
+          />
+        </div>
+      )}
     </Card>
   )
 }

@@ -40,7 +40,7 @@ export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
   paginatedMeasurements: {
     data: [],
     page: 1,
-    totalItems: 0,
+    totalItems: 17520,
   },
   isLoadingPaginatedMeasurements: false,
   setPage: (page: number) => {
@@ -53,15 +53,14 @@ export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
     const { page } = get().paginatedMeasurements
     try {
       set(state => ({ ...state, isLoadingPaginatedMeasurements: true }))
-      const response = await MeasurementService.getPaginated({
+      const response = await MeasurementService.search({
         pagination: { page },
       })
       set(state => ({
         ...state,
         paginatedMeasurements: {
           ...state.paginatedMeasurements,
-          data: response.data,
-          totalItems: response.items,
+          data: response,
         },
       }))
     } catch (error) {

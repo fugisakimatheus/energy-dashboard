@@ -14,7 +14,7 @@ export interface HTTPRequestConfig {
   cacheConfig?: HTTPRequestCacheConfig
 }
 
-const BASE_URL = 'http://localhost:3333'
+const BASE_URL = 'https://energy-dashboard-api.vercel.app'
 
 export class HTTPService {
   static async request<Response>(config: HTTPRequestConfig): Promise<Response> {

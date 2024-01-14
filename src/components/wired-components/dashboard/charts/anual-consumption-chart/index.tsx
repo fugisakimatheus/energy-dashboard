@@ -1,8 +1,8 @@
+import Card from '@/components/dump-components/card'
 import { MeasurementService } from '@/data/services/measurements-service'
 import { generateMonthNumbers, getMonthName } from '@/utils/date'
 import { groupMeasurementsConsumptionByMonths } from '@/utils/measurement'
 import AnualConsumptionChartWrapper from './chart'
-import Card from '@/components/dump-components/card'
 
 type AnualConsumptionChartData = {
   label: string
@@ -26,19 +26,19 @@ export default async function AnualConsumptionChart() {
     { cache: 'no-store' },
   )
 
-  const lastYearMonthConsumptions =
+  const lastYearConsumptions =
     groupMeasurementsConsumptionByMonths(lastYearMeasurements)
 
-  const currentYearMonthConsumption = groupMeasurementsConsumptionByMonths(
+  const currentYearConsumption = groupMeasurementsConsumptionByMonths(
     currentYearMeasurements,
   )
 
   const anualData = generateMonthNumbers().reduce<AnualConsumptionChartData[]>(
     (list, month) => {
-      const lastYearMonth = lastYearMonthConsumptions.find(
+      const lastYearMonth = lastYearConsumptions.find(
         measurement => measurement.month === month,
       )
-      const currentYearMonth = currentYearMonthConsumption.find(
+      const currentYearMonth = currentYearConsumption.find(
         measurement => measurement.month === month,
       )
 

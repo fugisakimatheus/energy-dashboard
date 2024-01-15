@@ -1,7 +1,7 @@
 import Card from '@/components/dump-components/card'
 import ChartLoading from '@/components/dump-components/chart-loading'
 
-export default async function HistoricalMeasurementChartLoading() {
+export default function HistoricalMeasurementChartLoading() {
   return (
     <Card>
       <div className="px-4 mb-4 flex flex-col">

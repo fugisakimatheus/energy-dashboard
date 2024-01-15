@@ -1,3 +1,6 @@
 .next
 /node_modules
 /public
+/jest-coverage
+*.config.*
+e2e-results

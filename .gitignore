@@ -8,6 +8,7 @@
 
 # testing
 /coverage
+/jest-coverage
 
 # next.js
 /.next/
@@ -32,5 +33,11 @@ yarn-error.log*
 .vercel
 
 # typescript
+/.swc
 *.tsbuildinfo
 next-env.d.ts
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+e2e-results

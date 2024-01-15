@@ -22,6 +22,7 @@ export default function ChartLoading(props: ChartLoadingProps) {
     <div className="gap-4 flex flex-row items-end justify-center w-full animate-pulse">
       {Array.from({ length: colsNumber }, (_, i) => i + 1).map(number => (
         <div
+          data-testid="chart-bar"
           key={number}
           style={{ height: `${generateRandomNumber()}px` }}
           className={`${getClassByColumnNumber(

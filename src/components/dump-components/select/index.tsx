@@ -6,7 +6,7 @@ import {
   SelectProps as UISelectProps,
 } from '@nextui-org/react'
 
-interface SelectOption {
+export interface SelectOption {
   value: string
   label: string
 }
@@ -19,6 +19,7 @@ export default function Select(props: SelectProps) {
   const { options, ...rest } = props
   return (
     <UISelect
+      data-testid="select-component"
       variant="bordered"
       size="sm"
       color="primary"

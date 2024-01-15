@@ -43,6 +43,7 @@ export default function TableLoading() {
         {Array.from({ length: 10 }, (_, index) => index + 1).map(number => (
           <TableRow
             key={number}
+            data-testid="table-row"
             className="border-b border-gray-200 last:border-none h-14"
           >
             {Array.from({ length: 6 }, (_, index) => index + 1).map(cell => (

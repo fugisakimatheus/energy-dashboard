@@ -2,7 +2,7 @@ import Card from '@/components/dump-components/card'
 import ErrorBox from '@/components/dump-components/error-box'
 import AnualConsumptionChartHeader from './header'
 
-export default async function AnualConsumptionChartError() {
+export default function AnualConsumptionChartError() {
   return (
     <Card>
       <AnualConsumptionChartHeader />

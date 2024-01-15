@@ -45,6 +45,7 @@ export default function HourlyMeasurementChartWrapper(
         />
         <YAxis
           unit=" (MWh)"
+          tickFormatter={value => Math.round(value).toString()}
           tickMargin={8}
           domain={[90, 114]}
           fontSize={12}

@@ -2,7 +2,7 @@ import Card from '@/components/dump-components/card'
 import NoDataBox from '@/components/dump-components/no-data-box'
 import HistoricalMeasurementChartHeader from './header'
 
-export default async function HistoricalMeasurementChartNoData() {
+export default function HistoricalMeasurementChartNoData() {
   return (
     <Card>
       <HistoricalMeasurementChartHeader />

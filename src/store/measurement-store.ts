@@ -18,12 +18,16 @@ type PaginatedMeasurementsSort = {
   direction: string | null
 }
 
-type MeasurementStore = {
+export type MeasurementStore = {
   hourlyMeasurements: {
     data: Measurement[]
   }
   hourlyMeasurementsStatus: LoadingStatus
-  getHourlyMeasurements: (day: string, month: string, year: string) => void
+  getHourlyMeasurements: (
+    day: string,
+    month: string,
+    year: string,
+  ) => Promise<void>
   paginatedMeasurements: {
     data: Measurement[]
     page: number
@@ -38,7 +42,7 @@ type MeasurementStore = {
   setPage: (page: number) => void
   setPaginatedMeasurementsDate: (params?: PaginatedMeasurementsDate) => void
   setPaginatedMeasurementsSort: (sort?: PaginatedMeasurementsSort) => void
-  getPaginatedMeasurements: () => void
+  getPaginatedMeasurements: () => Promise<void>
 }
 
 export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
@@ -128,13 +132,19 @@ export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
 
     const filters: GetMeasurementsFilters = {}
     if (start) {
-      const [day, month, year] = start.toLocaleDateString().split('/')
+      const [day, month, year] = start
+        .toLocaleDateString('pt-BR')
+        .split('/')
+        .map(value => value.padStart(2, '0'))
       filters.day_gte = day
       filters.month_gte = month
       filters.year_gte = year
     }
     if (end) {
-      const [day, month, year] = end.toLocaleDateString().split('/')
+      const [day, month, year] = end
+        .toLocaleDateString('pt-BR')
+        .split('/')
+        .map(value => value.padStart(2, '0'))
       filters.day_lte = day
       filters.month_lte = month
       filters.year_lte = year

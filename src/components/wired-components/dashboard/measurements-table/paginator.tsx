@@ -8,24 +8,22 @@ export default function MeasurementsTablePaginator() {
   const getPaginatedMeasurements = useMeasurementStore(
     state => state.getPaginatedMeasurements,
   )
+  const setPage = useMeasurementStore(state => state.setPage)
   const isLoading = useMeasurementStore(
     state => state.paginatedMeasurementsStatus === 'loading',
   )
-  const setPage = useMeasurementStore(state => state.setPage)
-  const totalItems = useMeasurementStore(
-    state => state.paginatedMeasurements.totalItems,
+  const { page, totalItems, data } = useMeasurementStore(
+    state => state.paginatedMeasurements,
   )
-  const page = useMeasurementStore(state => state.paginatedMeasurements.page)
-  const hasData = useMeasurementStore(
-    state => state.paginatedMeasurements.data.length > 0,
-  )
+  const hasData = data.length > 0
 
   const perPage = 10
   const isDisabledPrevious = page === 1 || isLoading
   const isDisabledNext = page * perPage >= totalItems || isLoading || !hasData
 
   const handleChangePage = (action: 'next' | 'previous') => {
-    const increment = (action === 'next' ? 1 : -1) * 1
+    const operator = action === 'next' ? 1 : -1
+    const increment = operator * 1
     setPage(page + increment)
     getPaginatedMeasurements()
   }

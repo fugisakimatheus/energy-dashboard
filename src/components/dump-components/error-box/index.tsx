@@ -30,6 +30,7 @@ export default function ErrorBox(props: ErrorBoxProps) {
 
   return (
     <div
+      data-testid="error-box"
       style={{ height }}
       className="bg-red-50 flex flex-col items-center justify-center gap-2 mx-4 rounded-md px-8"
     >

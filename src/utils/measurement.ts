@@ -1,19 +1,21 @@
 import { Measurement } from '@/data/models/measurement/measurement-model'
 
-type MonthGroupedMeasurement = {
-  month: number
-  year: number
-  monthlyConsumptionTotal: number
-}
-
 export const groupMeasurementsConsumptionByMonths = (data: Measurement[]) => {
-  // TODO: Trabalhar em cima dos dados, das medições diárias
-  return data.reduce<MonthGroupedMeasurement[]>((list, measurement) => {
-    list.push({
-      month: measurement.month,
-      year: measurement.year,
-      monthlyConsumptionTotal: measurement.consumption,
-    })
-    return list
-  }, [])
+  const consumptionsByMonth: Record<string, number> = {}
+
+  data.forEach(({ year, month, consumption }) => {
+    const key = `${year}-${month}`
+    consumptionsByMonth[key] = (consumptionsByMonth[key] || 0) + consumption
+  })
+
+  return Object.entries(consumptionsByMonth).map(
+    ([yearMonthKey, monthlyConsumptionTotal]) => {
+      const [year, month] = yearMonthKey.split('-')
+      return {
+        year: parseInt(year),
+        month: parseInt(month),
+        monthlyConsumptionTotal,
+      }
+    },
+  )
 }

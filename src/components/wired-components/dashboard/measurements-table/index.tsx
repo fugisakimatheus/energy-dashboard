@@ -42,7 +42,10 @@ export default function MeasurementsTable() {
 
   const handleDateChange = (value: (Date | null)[]) => {
     setPaginatedMeasurementsDate({ start: value[0], end: value[1] })
-    getPaginatedMeasurements()
+    const hasTwoValues = value.filter(o => o)
+    if (hasTwoValues.length > 1 || hasTwoValues.length === 0) {
+      getPaginatedMeasurements()
+    }
   }
 
   useEffect(() => {

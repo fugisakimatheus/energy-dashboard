@@ -1,8 +1,8 @@
 'use client'
 
-import './calendar.css'
 import ptBR from 'date-fns/locale/pt-BR'
 import DatePicker, { registerLocale } from 'react-datepicker'
+import './calendar.css'
 registerLocale('pt-BR', ptBR)
 
 type DateRangePickerProps = {
@@ -22,6 +22,7 @@ export default function DateRangePicker(props: DateRangePickerProps) {
   return (
     <div className="w-[340px]">
       <DatePicker
+        data-testid="datepicker"
         dateFormat="dd 'de' MMM'. de' yyyy"
         showYearDropdown
         showMonthDropdown

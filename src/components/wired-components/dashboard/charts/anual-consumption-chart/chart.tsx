@@ -43,6 +43,7 @@ export default function AnualConsumptionChartWrapper(
         <YAxis
           domain={[0, 120]}
           unit=" (MWh)"
+          tickFormatter={value => Math.round(value).toString()}
           tickMargin={8}
           fontSize={12}
           fontWeight="500"

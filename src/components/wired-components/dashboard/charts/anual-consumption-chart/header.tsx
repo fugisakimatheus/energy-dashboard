@@ -1,4 +1,4 @@
-export default async function AnualConsumptionChartHeader() {
+export default function AnualConsumptionChartHeader() {
   const lastYear = '2021'
   const currentYear = '2022'
 

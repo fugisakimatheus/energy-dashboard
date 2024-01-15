@@ -1,8 +1,8 @@
 import Card from '@/components/dump-components/card'
 import { MeasurementService } from '@/data/services/measurements-service'
 import HistoricalMeasurementChartWrapper from './chart'
-import HistoricalMeasurementChartHeader from './header'
 import HistoricalMeasurementChartError from './error'
+import HistoricalMeasurementChartHeader from './header'
 import HistoricalMeasurementChartNoData from './no-data'
 
 type LastWeekConsumptionChartData = {

@@ -35,6 +35,7 @@ export default function HistoricalMeasurementChartWrapper(
         />
         <YAxis
           unit=" (MWh)"
+          tickFormatter={value => Math.round(value).toString()}
           tickMargin={8}
           domain={[88, 120]}
           fontSize={12}

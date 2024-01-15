@@ -8,6 +8,7 @@ export default function NoDataBox(props: NoDataBoxProps) {
   const { height } = props
   return (
     <div
+      data-testid="no-data-box"
       style={{ height }}
       className="bg-blue-50 flex flex-col items-center justify-center gap-2 mx-4 rounded-md px-6"
     >

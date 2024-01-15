@@ -1,4 +1,5 @@
 import Card from '@/components/dump-components/card'
+import { GetMeasurementsSort } from '@/data/models/measurement/measurement-request-model'
 import { MeasurementService } from '@/data/services/measurements-service'
 import { generateMonthNumbers, getMonthName } from '@/utils/date'
 import { groupMeasurementsConsumptionByMonths } from '@/utils/measurement'
@@ -6,7 +7,6 @@ import AnualConsumptionChartWrapper from './chart'
 import AnualConsumptionChartError from './error'
 import AnualConsumptionChartHeader from './header'
 import AnualConsumptionChartNoData from './no-data'
-import { GetMeasurementsSort } from '@/data/models/measurement/measurement-request-model'
 
 type AnualConsumptionChartData = {
   label: string

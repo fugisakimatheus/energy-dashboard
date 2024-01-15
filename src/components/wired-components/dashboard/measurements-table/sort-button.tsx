@@ -3,33 +3,38 @@
 import { useMeasurementStore } from '@/store/measurement-store'
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md'
 
-type Sort = 'asc' | 'desc' | null
-
 type SortButtonProps = {
   children: React.ReactNode
   field: string
-  onSort: () => void
 }
 
 export default function SortButton(props: SortButtonProps) {
-  const { children, field, onSort } = props
+  const { children, field } = props
 
-  const setSortsMap = useMeasurementStore(state => state.setSortsMap)
-  const sortsMap = useMeasurementStore(
-    state => state.paginatedMeasurements.sortsMap,
+  const getPaginatedMeasurements = useMeasurementStore(
+    state => state.getPaginatedMeasurements,
   )
-  const sort = sortsMap[field] as Sort
+  const setPaginatedMeasurementsSort = useMeasurementStore(
+    state => state.setPaginatedMeasurementsSort,
+  )
+  const sortsMap = useMeasurementStore(
+    state => state.paginatedMeasurements.params.sortsMap,
+  )
+
+  const sort = sortsMap[field]
+  const canShowUpArrow = !sort || sort === 'asc'
+  const canShowDownArrow = !sort || sort === 'desc'
 
   const handleSort = () => {
-    const sortValueMap: Record<string, Sort> = {
+    const sortValueMap: Record<string, string | null> = {
       undefined: 'asc',
       null: 'asc',
       asc: 'desc',
       desc: null,
     }
-    const value = sortValueMap[String(sort)]
-    setSortsMap(field, value)
-    onSort()
+    const direction = sortValueMap[String(sort)]
+    setPaginatedMeasurementsSort({ field, direction })
+    getPaginatedMeasurements()
   }
 
   return (
@@ -39,12 +44,12 @@ export default function SortButton(props: SortButtonProps) {
     >
       {children}
       <div className="flex flex-col items-center justify-center text-xs">
-        {(!sort || sort === 'asc') && (
+        {canShowUpArrow && (
           <div className="rotate-90 -mb-1">
             <MdArrowBackIos size={10} className="text-gray-700" />
           </div>
         )}
-        {(!sort || sort === 'desc') && (
+        {canShowDownArrow && (
           <div className="rotate-90">
             <MdArrowForwardIos size={10} className="text-gray-700" />
           </div>

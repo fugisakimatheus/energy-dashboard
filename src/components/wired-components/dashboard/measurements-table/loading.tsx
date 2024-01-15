@@ -2,12 +2,13 @@
 
 import {
   Table,
-  TableHeader,
-  TableColumn,
   TableBody,
-  TableRow,
   TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
 } from '@nextui-org/react'
+import SortButton from './sort-button'
 
 export default function TableLoading() {
   return (
@@ -18,25 +19,26 @@ export default function TableLoading() {
       aria-label="Measurements table data"
     >
       <TableHeader>
-        <TableColumn className="bg-white text-sm font-bold" allowsSorting>
-          Agente
+        <TableColumn className="bg-white text-sm font-bold min-w-[100px]">
+          <SortButton field="agent">Agente</SortButton>
         </TableColumn>
-        <TableColumn className="bg-white text-sm font-bold" allowsSorting>
-          Ponto
+        <TableColumn className="bg-white text-sm font-bold">
+          <SortButton field="meter">Ponto</SortButton>
         </TableColumn>
-        <TableColumn className="bg-white text-sm font-bold" allowsSorting>
-          Data
+        <TableColumn className="bg-white text-sm font-bold">
+          <SortButton field="reference">Data</SortButton>
         </TableColumn>
-        <TableColumn className="bg-white text-sm font-bold" allowsSorting>
-          Hora
+        <TableColumn className="bg-white text-sm font-bold">
+          <SortButton field="hour">Hora</SortButton>
         </TableColumn>
-        <TableColumn className="bg-white text-sm font-bold" allowsSorting>
-          Consumo Ativo (MWh)
+        <TableColumn className="bg-white text-sm font-bold">
+          <SortButton field="consumption">Consumo Ativo (MWh)</SortButton>
         </TableColumn>
-        <TableColumn className="bg-white text-sm font-bold" allowsSorting>
-          Origem
+        <TableColumn className="bg-white text-sm font-bold min-w-[140px]">
+          <SortButton field="origin">Origem</SortButton>
         </TableColumn>
       </TableHeader>
+
       <TableBody>
         {Array.from({ length: 10 }, (_, index) => index + 1).map(number => (
           <TableRow

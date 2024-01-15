@@ -8,9 +8,14 @@ import { create } from 'zustand'
 
 type LoadingStatus = 'pristine' | 'loading' | 'success' | 'error'
 
-type GetPaginatedMeasurementsParams = {
+type PaginatedMeasurementsDate = {
   start?: Date | null
   end?: Date | null
+}
+
+type PaginatedMeasurementsSort = {
+  field: string
+  direction: string | null
 }
 
 type MeasurementStore = {
@@ -21,14 +26,19 @@ type MeasurementStore = {
   getHourlyMeasurements: (day: string, month: string, year: string) => void
   paginatedMeasurements: {
     data: Measurement[]
-    sortsMap: Record<string, string | null>
     page: number
     totalItems: number
+    params: {
+      startDate?: Date | null
+      endDate?: Date | null
+      sortsMap: Record<string, string | null>
+    }
   }
   paginatedMeasurementsStatus: LoadingStatus
   setPage: (page: number) => void
-  setSortsMap: (field: string, value: string | null) => void
-  getPaginatedMeasurements: (params?: GetPaginatedMeasurementsParams) => void
+  setPaginatedMeasurementsDate: (params?: PaginatedMeasurementsDate) => void
+  setPaginatedMeasurementsSort: (sort?: PaginatedMeasurementsSort) => void
+  getPaginatedMeasurements: () => void
 }
 
 export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
@@ -52,9 +62,13 @@ export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
   },
   paginatedMeasurements: {
     data: [],
-    sortsMap: {},
     page: 1,
-    totalItems: 17520,
+    totalItems: 0,
+    params: {
+      startDate: null,
+      endDate: null,
+      sortsMap: {},
+    },
   },
   paginatedMeasurementsStatus: 'pristine',
   setPage: (page: number) => {
@@ -63,22 +77,47 @@ export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
       paginatedMeasurements: { ...state.paginatedMeasurements, page },
     }))
   },
-  setSortsMap: (field: string, value: string | null) => {
-    const { sortsMap } = get().paginatedMeasurements
-    const newSortsMap = { ...sortsMap, [field]: value }
-    set(state => ({
-      ...state,
-      paginatedMeasurements: {
-        ...state.paginatedMeasurements,
-        sortsMap: newSortsMap,
-      },
-    }))
+  setPaginatedMeasurementsDate: (params?: PaginatedMeasurementsDate) => {
+    const startDate = params?.start
+    const endDate = params?.end
+    set(state => {
+      const params = { ...state.paginatedMeasurements.params }
+      params.startDate = startDate
+      params.endDate = endDate
+      return {
+        ...state,
+        paginatedMeasurements: {
+          ...state.paginatedMeasurements,
+          params,
+          page: 1,
+        },
+      }
+    })
   },
-  getPaginatedMeasurements: async (params?: GetPaginatedMeasurementsParams) => {
-    const { page, sortsMap } = get().paginatedMeasurements
-    const start = params?.start
-    const end = params?.end
-    const sorts = Object.entries(sortsMap)
+  setPaginatedMeasurementsSort: (sort?: PaginatedMeasurementsSort) => {
+    set(state => {
+      const params = { ...state.paginatedMeasurements.params }
+      const sortsMap = { ...state.paginatedMeasurements.params.sortsMap }
+      if (sort) {
+        sortsMap[sort.field] = sort.direction
+        params.sortsMap = sortsMap
+      }
+      return {
+        ...state,
+        paginatedMeasurements: {
+          ...state.paginatedMeasurements,
+          params,
+          page: 1,
+        },
+      }
+    })
+  },
+  getPaginatedMeasurements: async () => {
+    const { page, params } = get().paginatedMeasurements
+
+    const start = params?.startDate
+    const end = params?.endDate
+    const sorts = Object.entries(params.sortsMap)
       .filter(([_, value]) => value)
       .map(([field, direction]) => ({
         field,
@@ -101,12 +140,14 @@ export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
       filters.year_lte = year
     }
 
-    const response = await MeasurementService.search({
+    const measurements = await MeasurementService.search({
       pagination: { page },
       filters,
       sorts,
     })
-    if (typeof response === 'string') {
+    const measurementsCount = await MeasurementService.getCount({ filters })
+
+    if (typeof measurements === 'string') {
       set(state => ({ ...state, paginatedMeasurementsStatus: 'error' }))
       return
     }
@@ -115,7 +156,8 @@ export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
       paginatedMeasurementsStatus: 'success',
       paginatedMeasurements: {
         ...state.paginatedMeasurements,
-        data: response,
+        data: measurements,
+        totalItems: measurementsCount,
       },
     }))
   },

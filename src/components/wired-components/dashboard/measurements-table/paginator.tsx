@@ -4,42 +4,30 @@ import { useMeasurementStore } from '@/store/measurement-store'
 import { formatNumber } from '@/utils/number'
 import { Button } from '@nextui-org/react'
 
-type MeasurementsTablePaginatorProps = {
-  onPageChanged: () => void
-}
-
-export default function MeasurementsTablePaginator(
-  props: MeasurementsTablePaginatorProps,
-) {
-  const { onPageChanged } = props
-
+export default function MeasurementsTablePaginator() {
   const getPaginatedMeasurements = useMeasurementStore(
     state => state.getPaginatedMeasurements,
   )
   const isLoading = useMeasurementStore(
     state => state.paginatedMeasurementsStatus === 'loading',
   )
-  const hasData = useMeasurementStore(
-    state => state.paginatedMeasurements.data.length > 0,
-  )
   const setPage = useMeasurementStore(state => state.setPage)
   const totalItems = useMeasurementStore(
     state => state.paginatedMeasurements.totalItems,
   )
   const page = useMeasurementStore(state => state.paginatedMeasurements.page)
-  const perPage = 10
+  const hasData = useMeasurementStore(
+    state => state.paginatedMeasurements.data.length > 0,
+  )
 
+  const perPage = 10
   const isDisabledPrevious = page === 1 || isLoading
   const isDisabledNext = page * perPage >= totalItems || isLoading || !hasData
 
-  const handlePreviousPage = () => {
-    setPage(page - 1)
-    onPageChanged()
-  }
-
-  const handleNextPage = () => {
-    setPage(page + 1)
-    onPageChanged()
+  const handleChangePage = (action: 'next' | 'previous') => {
+    const increment = (action === 'next' ? 1 : -1) * 1
+    setPage(page + increment)
+    getPaginatedMeasurements()
   }
 
   return (
@@ -56,7 +44,7 @@ export default function MeasurementsTablePaginator(
           radius="sm"
           className="border font-medium"
           isDisabled={isDisabledPrevious}
-          onClick={() => handlePreviousPage()}
+          onClick={() => handleChangePage('previous')}
         >
           Anterior
         </Button>
@@ -66,7 +54,7 @@ export default function MeasurementsTablePaginator(
           radius="sm"
           className="border font-medium"
           isDisabled={isDisabledNext}
-          onClick={() => handleNextPage()}
+          onClick={() => handleChangePage('next')}
         >
           Próximo
         </Button>

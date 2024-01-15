@@ -13,17 +13,20 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import TableLoading from './loading'
 import MeasurementsTablePaginator from './paginator'
 import SortButton from './sort-button'
 
 export default function MeasurementsTable() {
-  const [startDate, setStartDate] = useState<Date | null>(null)
-  const [endDate, setEndDate] = useState<Date | null>(null)
-
   const getPaginatedMeasurements = useMeasurementStore(
     state => state.getPaginatedMeasurements,
+  )
+  const setPaginatedMeasurementsDate = useMeasurementStore(
+    state => state.setPaginatedMeasurementsDate,
+  )
+  const { startDate, endDate } = useMeasurementStore(
+    state => state.paginatedMeasurements.params,
   )
   const measurements = useMeasurementStore(
     state => state.paginatedMeasurements.data,
@@ -38,17 +41,13 @@ export default function MeasurementsTable() {
   const canShowPaginator = (hasData && !isError) || isSuccess
 
   const handleDateChange = (value: (Date | null)[]) => {
-    setStartDate(value[0])
-    setEndDate(value[1])
-  }
-
-  const handleLoadMeasurements = () => {
-    getPaginatedMeasurements({ start: startDate, end: endDate })
+    setPaginatedMeasurementsDate({ start: value[0], end: value[1] })
+    getPaginatedMeasurements()
   }
 
   useEffect(() => {
-    getPaginatedMeasurements({ start: startDate, end: endDate })
-  }, [getPaginatedMeasurements, startDate, endDate])
+    getPaginatedMeasurements()
+  }, [getPaginatedMeasurements])
 
   const renderTable = () => {
     if (isLoading) {
@@ -71,40 +70,22 @@ export default function MeasurementsTable() {
       >
         <TableHeader>
           <TableColumn className="bg-white text-sm font-bold min-w-[100px]">
-            <SortButton field="agent" onSort={() => handleLoadMeasurements()}>
-              Agente
-            </SortButton>
+            <SortButton field="agent">Agente</SortButton>
           </TableColumn>
           <TableColumn className="bg-white text-sm font-bold">
-            <SortButton field="meter" onSort={() => handleLoadMeasurements()}>
-              Ponto
-            </SortButton>
+            <SortButton field="meter">Ponto</SortButton>
           </TableColumn>
           <TableColumn className="bg-white text-sm font-bold">
-            <SortButton
-              field="reference"
-              onSort={() => handleLoadMeasurements()}
-            >
-              Data
-            </SortButton>
+            <SortButton field="reference">Data</SortButton>
           </TableColumn>
           <TableColumn className="bg-white text-sm font-bold">
-            <SortButton field="hour" onSort={() => handleLoadMeasurements()}>
-              Hora
-            </SortButton>
+            <SortButton field="hour">Hora</SortButton>
           </TableColumn>
           <TableColumn className="bg-white text-sm font-bold">
-            <SortButton
-              field="consumption"
-              onSort={() => handleLoadMeasurements()}
-            >
-              Consumo Ativo (MWh)
-            </SortButton>
+            <SortButton field="consumption">Consumo Ativo (MWh)</SortButton>
           </TableColumn>
           <TableColumn className="bg-white text-sm font-bold min-w-[140px]">
-            <SortButton field="origin" onSort={() => handleLoadMeasurements()}>
-              Origem
-            </SortButton>
+            <SortButton field="origin">Origem</SortButton>
           </TableColumn>
         </TableHeader>
 
@@ -146,11 +127,7 @@ export default function MeasurementsTable() {
         />
       </div>
       {renderTable()}
-      {canShowPaginator && (
-        <MeasurementsTablePaginator
-          onPageChanged={() => handleLoadMeasurements()}
-        />
-      )}
+      {canShowPaginator && <MeasurementsTablePaginator />}
     </Card>
   )
 }

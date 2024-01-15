@@ -33,4 +33,25 @@ export class MeasurementService {
       return 'Erro ao carregar dados'
     }
   }
+
+  static async getCount(
+    params: Omit<GetMeasurementsParams, 'pagination'> = {},
+    config?: HTTPRequestCacheConfig,
+  ): Promise<number> {
+    const { sorts = [], filters } = params
+
+    const { _sort, _order } = this.buildSortParams(sorts)
+
+    try {
+      const response = await HTTPService.request<Measurement[]>({
+        path: '/measurements',
+        method: 'GET',
+        params: { _sort, _order, ...filters },
+        cacheConfig: config,
+      })
+      return response.length
+    } catch (error) {
+      return 0
+    }
+  }
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import Card from '@/components/dump-components/card'
+import DateRangePicker from '@/components/dump-components/date-range-picker'
 import ErrorBox from '@/components/dump-components/error-box'
 import NoDataBox from '@/components/dump-components/no-data-box'
 import { useMeasurementStore } from '@/store/measurement-store'
@@ -12,11 +13,15 @@ import {
   TableHeader,
   TableRow,
 } from '@nextui-org/react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import TableLoading from './loading'
 import MeasurementsTablePaginator from './paginator'
+import SortButton from './sort-button'
 
 export default function MeasurementsTable() {
+  const [startDate, setStartDate] = useState<Date | null>(null)
+  const [endDate, setEndDate] = useState<Date | null>(null)
+
   const getPaginatedMeasurements = useMeasurementStore(
     state => state.getPaginatedMeasurements,
   )
@@ -30,11 +35,20 @@ export default function MeasurementsTable() {
   const isSuccess = status === 'success'
   const hasData = measurements.length > 0
 
-  const canShowPaginator = hasData && isSuccess
+  const canShowPaginator = (hasData && !isError) || isSuccess
+
+  const handleDateChange = (value: (Date | null)[]) => {
+    setStartDate(value[0])
+    setEndDate(value[1])
+  }
+
+  const handleLoadMeasurements = () => {
+    getPaginatedMeasurements({ start: startDate, end: endDate })
+  }
 
   useEffect(() => {
-    getPaginatedMeasurements()
-  }, [getPaginatedMeasurements])
+    getPaginatedMeasurements({ start: startDate, end: endDate })
+  }, [getPaginatedMeasurements, startDate, endDate])
 
   const renderTable = () => {
     if (isLoading) {
@@ -57,18 +71,40 @@ export default function MeasurementsTable() {
       >
         <TableHeader>
           <TableColumn className="bg-white text-sm font-bold min-w-[100px]">
-            Agente
+            <SortButton field="agent" onSort={() => handleLoadMeasurements()}>
+              Agente
+            </SortButton>
           </TableColumn>
           <TableColumn className="bg-white text-sm font-bold">
-            Ponto
+            <SortButton field="meter" onSort={() => handleLoadMeasurements()}>
+              Ponto
+            </SortButton>
           </TableColumn>
-          <TableColumn className="bg-white text-sm font-bold">Data</TableColumn>
-          <TableColumn className="bg-white text-sm font-bold">Hora</TableColumn>
           <TableColumn className="bg-white text-sm font-bold">
-            Consumo Ativo (MWh)
+            <SortButton
+              field="reference"
+              onSort={() => handleLoadMeasurements()}
+            >
+              Data
+            </SortButton>
+          </TableColumn>
+          <TableColumn className="bg-white text-sm font-bold">
+            <SortButton field="hour" onSort={() => handleLoadMeasurements()}>
+              Hora
+            </SortButton>
+          </TableColumn>
+          <TableColumn className="bg-white text-sm font-bold">
+            <SortButton
+              field="consumption"
+              onSort={() => handleLoadMeasurements()}
+            >
+              Consumo Ativo (MWh)
+            </SortButton>
           </TableColumn>
           <TableColumn className="bg-white text-sm font-bold min-w-[140px]">
-            Origem
+            <SortButton field="origin" onSort={() => handleLoadMeasurements()}>
+              Origem
+            </SortButton>
           </TableColumn>
         </TableHeader>
 
@@ -101,11 +137,20 @@ export default function MeasurementsTable() {
 
   return (
     <Card fitContent>
-      <div className="px-4 w-full flex flex-row items-center justify-between gap-6 mb-4">
+      <div className="px-4 w-full flex flex-col md:flex-row items-center justify-between gap-6 mb-4">
         <span className="text-[#374151] font-bold text-lg">Medições</span>
+        <DateRangePicker
+          startDate={startDate}
+          endDate={endDate}
+          onChange={value => handleDateChange(value)}
+        />
       </div>
       {renderTable()}
-      {canShowPaginator && <MeasurementsTablePaginator />}
+      {canShowPaginator && (
+        <MeasurementsTablePaginator
+          onPageChanged={() => handleLoadMeasurements()}
+        />
+      )}
     </Card>
   )
 }

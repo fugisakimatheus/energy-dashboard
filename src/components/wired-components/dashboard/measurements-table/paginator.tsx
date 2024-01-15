@@ -4,7 +4,15 @@ import { useMeasurementStore } from '@/store/measurement-store'
 import { formatNumber } from '@/utils/number'
 import { Button } from '@nextui-org/react'
 
-export default function MeasurementsTablePaginator() {
+type MeasurementsTablePaginatorProps = {
+  onPageChanged: () => void
+}
+
+export default function MeasurementsTablePaginator(
+  props: MeasurementsTablePaginatorProps,
+) {
+  const { onPageChanged } = props
+
   const getPaginatedMeasurements = useMeasurementStore(
     state => state.getPaginatedMeasurements,
   )
@@ -26,12 +34,12 @@ export default function MeasurementsTablePaginator() {
 
   const handlePreviousPage = () => {
     setPage(page - 1)
-    getPaginatedMeasurements()
+    onPageChanged()
   }
 
   const handleNextPage = () => {
     setPage(page + 1)
-    getPaginatedMeasurements()
+    onPageChanged()
   }
 
   return (

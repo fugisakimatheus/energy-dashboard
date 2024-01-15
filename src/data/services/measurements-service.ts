@@ -7,11 +7,9 @@ import { HTTPRequestCacheConfig, HTTPService } from './http-service'
 
 export class MeasurementService {
   private static buildSortParams(sorts: GetMeasurementsSort[]) {
-    const _sort = sorts
-      .filter(sort => !!sort.field)
-      .map(sort => `${sort.direction === 'desc' ? '-' : ''}${sort.field}`)
-      .join(',')
-    return _sort
+    const _sort = sorts.map(sort => sort.field).join(',')
+    const _order = sorts.map(sort => sort.direction).join(',')
+    return { _sort, _order }
   }
 
   static async search(
@@ -21,13 +19,13 @@ export class MeasurementService {
     const { sorts = [], pagination, filters } = params
 
     const _page = pagination?.page ?? ''
-    const _sort = this.buildSortParams(sorts)
+    const { _sort, _order } = this.buildSortParams(sorts)
 
     try {
       const response = await HTTPService.request<Measurement[]>({
         path: '/measurements',
         method: 'GET',
-        params: { _page, _sort, ...filters },
+        params: { _page, _sort, _order, ...filters },
         cacheConfig: config,
       })
       return response

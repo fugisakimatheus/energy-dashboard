@@ -6,6 +6,7 @@ import AnualConsumptionChartWrapper from './chart'
 import AnualConsumptionChartError from './error'
 import AnualConsumptionChartHeader from './header'
 import AnualConsumptionChartNoData from './no-data'
+import { GetMeasurementsSort } from '@/data/models/measurement/measurement-request-model'
 
 type AnualConsumptionChartData = {
   label: string
@@ -19,13 +20,18 @@ export default async function AnualConsumptionChart() {
   const lastYear = '2021'
   const currentYear = '2022'
 
+  const sorts: GetMeasurementsSort[] = [
+    { field: 'day', direction: 'asc' },
+    { field: 'month', direction: 'asc' },
+  ]
+
   const lastYearMeasurements = await MeasurementService.search(
-    { filters: { year: lastYear } },
+    { filters: { year: lastYear }, sorts },
     { cache: 'no-store' },
   )
 
   const currentYearMeasurements = await MeasurementService.search(
-    { filters: { year: currentYear } },
+    { filters: { year: currentYear }, sorts },
     { cache: 'no-store' },
   )
 

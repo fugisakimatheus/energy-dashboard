@@ -1,0 +1,55 @@
+.custom-calendar {
+  @apply bg-[#F7FAFC];
+}
+
+.custom-calendar .react-datepicker__month-option,
+.custom-calendar .react-datepicker__year-option {
+  @apply bg-[#F7FAFC] font-semibold text-gray-900;
+}
+
+.custom-calendar .react-datepicker__day {
+  @apply font-semibold text-gray-900;
+}
+
+.custom-calendar .react-datepicker__current-month {
+  @apply text-gray-800;
+}
+
+.custom-calendar .react-datepicker__header {
+  @apply bg-white capitalize;
+}
+
+.custom-calendar .react-datepicker__header .react-datepicker__day-names {
+  @apply font-semibold;
+}
+
+.custom-calendar .react-datepicker__day-name {
+  @apply text-gray-700;
+}
+
+.custom-calendar .react-datepicker__triangle::after {
+  @apply border-b-white !important;
+}
+
+.custom-calendar .react-datepicker__month-read-view--selected-month,
+.custom-calendar .react-datepicker__year-read-view--selected-year {
+  @apply text-gray-800;
+}
+
+.custom-calendar .react-datepicker__month-read-view--down-arrow,
+.custom-calendar .react-datepicker__year-read-view--down-arrow {
+  @apply mt-[3px] border-gray-400;
+}
+
+.custom-calendar .react-datepicker__navigation-icon--previous,
+.custom-calendar .react-datepicker__navigation-icon--next {
+  @apply mt-[12px];
+}
+
+.custom-calendar .react-datepicker__navigation-icon::before {
+  @apply border-gray-400;
+}
+
+.custom-calendar .react-datepicker__month {
+  @apply bg-[#F7FAFC];
+}

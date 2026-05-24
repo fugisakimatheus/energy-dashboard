@@ -10,7 +10,9 @@ export default function MeasurementsTablePaginator() {
   )
   const setPage = useMeasurementStore(state => state.setPage)
   const isLoading = useMeasurementStore(
-    state => state.paginatedMeasurementsStatus === 'loading',
+    state =>
+      state.paginatedMeasurementsStatus === 'loading' ||
+      state.paginatedMeasurementsStatus === 'pristine',
   )
   const { page, totalItems, data } = useMeasurementStore(
     state => state.paginatedMeasurements,
@@ -29,28 +31,35 @@ export default function MeasurementsTablePaginator() {
   }
 
   return (
-    <div className="px-4 w-full flex flex-row items-center justify-between gap-6 mt-6">
-      <span className="text-[#6B7280] text-sm font-medium">
-        Exibindo {formatNumber(perPage * page)} de {formatNumber(totalItems)}{' '}
+    <div className="mt-5 flex w-full flex-col gap-3 border-t border-border/30 pt-5 sm:flex-row sm:items-center sm:justify-between">
+      <span className="text-sm text-muted-foreground">
+        Exibindo{' '}
+        <span className="font-semibold text-foreground">
+          {formatNumber(perPage * page)}
+        </span>{' '}
+        de{' '}
+        <span className="font-semibold text-foreground">
+          {formatNumber(totalItems)}
+        </span>{' '}
         itens
       </span>
 
       <div className="flex flex-row items-center gap-2">
         <Button
           variant="bordered"
-          color="primary"
-          radius="sm"
-          className="border font-medium"
+          radius="lg"
+          size="sm"
+          className="border-border/50 bg-surface/50 font-medium text-foreground"
           isDisabled={isDisabledPrevious}
           onClick={() => handleChangePage('previous')}
         >
           Anterior
         </Button>
         <Button
-          variant="bordered"
-          color="primary"
-          radius="sm"
-          className="border font-medium"
+          variant="flat"
+          radius="lg"
+          size="sm"
+          className="bg-accent/20 font-medium text-accent"
           isDisabled={isDisabledNext}
           onClick={() => handleChangePage('next')}
         >

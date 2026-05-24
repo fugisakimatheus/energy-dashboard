@@ -7,11 +7,10 @@ type CardProps = {
 
 export default function Card(props: CardProps) {
   const { children, fitContent = false } = props
-  const fitClass = fitContent ? 'w-full h-fit' : 'w-full h-full'
+  const fitClass = fitContent ? 'h-auto w-full' : 'h-full w-full'
+
   return (
-    <div
-      className={`${fitClass} px-4 pt-8 pb-8 bg-white shadow-sm border border-gray-200 rounded-lg`}
-    >
+    <div className={`${fitClass} glass-card overflow-hidden px-5 pb-6 pt-6 sm:px-6 sm:pb-8 sm:pt-7`}>
       {children}
     </div>
   )

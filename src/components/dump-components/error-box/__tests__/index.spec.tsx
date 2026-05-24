@@ -13,7 +13,7 @@ describe('ErrorBox', () => {
   it('should renders ErrorBox component with default message', () => {
     render(<ErrorBox height={100} />)
     const errorMessage = screen.getByText(
-      /Ops! ocorreu um erro ao carregar as informações/i,
+      /Ops! Ocorreu um erro ao carregar as informações/i,
     )
     expect(errorMessage).toBeTruthy()
   })

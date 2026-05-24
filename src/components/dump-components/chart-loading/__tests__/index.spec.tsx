@@ -5,14 +5,14 @@ describe('ChartLoading', () => {
   it('should renders the component with the correct number of columns', () => {
     const { container } = render(<ChartLoading colsNumber={5} />)
 
-    const columns = container.querySelectorAll('.animate-pulse > div')
+    const columns = container.querySelectorAll('[data-testid="chart-bar"]')
     expect(columns.length).toBe(5)
   })
 
   it('should generates random heights for each column', () => {
     const { container } = render(<ChartLoading colsNumber={3} />)
 
-    const columns = container.querySelectorAll('.animate-pulse > div')
+    const columns = container.querySelectorAll('[data-testid="chart-bar"]')
     columns.forEach(column => {
       const style = column.getAttribute('style') as string
       const numbers = style.match(/\d/g) as string[]

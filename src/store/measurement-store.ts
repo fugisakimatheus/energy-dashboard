@@ -45,24 +45,73 @@ export type MeasurementStore = {
   getPaginatedMeasurements: () => Promise<void>
 }
 
+let hourlyRequestId = 0
+let paginatedRequestId = 0
+
+const buildDateFilters = (
+  start?: Date | null,
+  end?: Date | null,
+): GetMeasurementsFilters => {
+  const filters: GetMeasurementsFilters = {}
+
+  if (start) {
+    const [day, month, year] = start
+      .toLocaleDateString('pt-BR')
+      .split('/')
+      .map(value => value.padStart(2, '0'))
+    filters.day_gte = day
+    filters.month_gte = month
+    filters.year_gte = year
+  }
+
+  if (end) {
+    const [day, month, year] = end
+      .toLocaleDateString('pt-BR')
+      .split('/')
+      .map(value => value.padStart(2, '0'))
+    filters.day_lte = day
+    filters.month_lte = month
+    filters.year_lte = year
+  }
+
+  return filters
+}
+
 export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
   hourlyMeasurements: { data: [] },
   hourlyMeasurementsStatus: 'pristine',
   getHourlyMeasurements: async (day: string, month: string, year: string) => {
+    const requestId = ++hourlyRequestId
+
     set(state => ({ ...state, hourlyMeasurementsStatus: 'loading' }))
-    const response = await MeasurementService.search(
-      { filters: { day, month, year } },
-      { cache: 'no-store' },
-    )
-    if (typeof response === 'string') {
+
+    try {
+      const response = await MeasurementService.search(
+        { filters: { day, month, year } },
+        { cache: 'no-store' },
+      )
+
+      if (requestId !== hourlyRequestId) {
+        return
+      }
+
+      if (typeof response === 'string') {
+        set(state => ({ ...state, hourlyMeasurementsStatus: 'error' }))
+        return
+      }
+
+      set(state => ({
+        ...state,
+        hourlyMeasurements: { ...state.hourlyMeasurements, data: response },
+        hourlyMeasurementsStatus: 'success',
+      }))
+    } catch {
+      if (requestId !== hourlyRequestId) {
+        return
+      }
+
       set(state => ({ ...state, hourlyMeasurementsStatus: 'error' }))
-      return
     }
-    set(state => ({
-      ...state,
-      hourlyMeasurements: { ...state.hourlyMeasurements, data: response },
-      hourlyMeasurementsStatus: 'success',
-    }))
   },
   paginatedMeasurements: {
     data: [],
@@ -117,10 +166,9 @@ export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
     })
   },
   getPaginatedMeasurements: async () => {
+    const requestId = ++paginatedRequestId
     const { page, params } = get().paginatedMeasurements
 
-    const start = params?.startDate
-    const end = params?.endDate
     const sorts = Object.entries(params.sortsMap)
       .filter(([_, value]) => value)
       .map(([field, direction]) => ({
@@ -128,47 +176,41 @@ export const useMeasurementStore = create<MeasurementStore>()((set, get) => ({
         direction,
       })) as GetMeasurementsSort[]
 
+    const filters = buildDateFilters(params.startDate, params.endDate)
+
     set(state => ({ ...state, paginatedMeasurementsStatus: 'loading' }))
 
-    const filters: GetMeasurementsFilters = {}
-    if (start) {
-      const [day, month, year] = start
-        .toLocaleDateString('pt-BR')
-        .split('/')
-        .map(value => value.padStart(2, '0'))
-      filters.day_gte = day
-      filters.month_gte = month
-      filters.year_gte = year
-    }
-    if (end) {
-      const [day, month, year] = end
-        .toLocaleDateString('pt-BR')
-        .split('/')
-        .map(value => value.padStart(2, '0'))
-      filters.day_lte = day
-      filters.month_lte = month
-      filters.year_lte = year
-    }
+    try {
+      const result = await MeasurementService.searchPaginated({
+        pagination: { page },
+        filters,
+        sorts,
+      })
 
-    const measurements = await MeasurementService.search({
-      pagination: { page },
-      filters,
-      sorts,
-    })
-    const measurementsCount = await MeasurementService.getCount({ filters })
+      if (requestId !== paginatedRequestId) {
+        return
+      }
 
-    if (typeof measurements === 'string') {
+      if (typeof result === 'string') {
+        set(state => ({ ...state, paginatedMeasurementsStatus: 'error' }))
+        return
+      }
+
+      set(state => ({
+        ...state,
+        paginatedMeasurementsStatus: 'success',
+        paginatedMeasurements: {
+          ...state.paginatedMeasurements,
+          data: result.data,
+          totalItems: result.totalCount,
+        },
+      }))
+    } catch {
+      if (requestId !== paginatedRequestId) {
+        return
+      }
+
       set(state => ({ ...state, paginatedMeasurementsStatus: 'error' }))
-      return
     }
-    set(state => ({
-      ...state,
-      paginatedMeasurementsStatus: 'success',
-      paginatedMeasurements: {
-        ...state.paginatedMeasurements,
-        data: measurements,
-        totalItems: measurementsCount,
-      },
-    }))
   },
 }))

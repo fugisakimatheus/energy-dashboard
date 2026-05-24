@@ -1,3 +1,4 @@
+import DashboardHeader from '@/components/dashboard-header'
 import AnualConsumptionChart from '@/components/wired-components/dashboard/charts/anual-consumption-chart'
 import AnualConsumptionChartLoading from '@/components/wired-components/dashboard/charts/anual-consumption-chart/loading'
 import HistoricalMeasurementChart from '@/components/wired-components/dashboard/charts/historical-measurement-chart'
@@ -8,33 +9,22 @@ import { Suspense } from 'react'
 
 export default async function DashboardPage() {
   return (
-    <div className="w-full h-full p-3 sm:p-6 md:p-12">
-      <div className="flex flex-col mb-8">
-        <span className="font-semibold text-lg text-[#374151]">Dashboard</span>
-        <span className="text-[#6E7582] font-medium">
-          Informações baseadas nos dados de medições colhidos na CCEE.
-        </span>
-      </div>
+    <div className="h-full w-full p-4 sm:p-6 md:p-10 lg:p-12">
+      <DashboardHeader />
 
-      <div className="w-full h-full flex flex-col gap-6 last:pb-12">
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="w-full lg:w-1/2">
-            <Suspense fallback={<AnualConsumptionChartLoading />}>
-              <AnualConsumptionChart />
-            </Suspense>
-          </div>
-          <div className="w-full lg:w-1/2">
-            <HourlyMeasurementChart />
-          </div>
+      <div className="flex w-full flex-col gap-5 sm:gap-6">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-6">
+          <Suspense fallback={<AnualConsumptionChartLoading />}>
+            <AnualConsumptionChart />
+          </Suspense>
+          <HourlyMeasurementChart />
         </div>
 
         <Suspense fallback={<HistoricalMeasurementChartLoading />}>
           <HistoricalMeasurementChart />
         </Suspense>
 
-        <div className="pb-12">
-          <MeasurementsTable />
-        </div>
+        <MeasurementsTable />
       </div>
     </div>
   )

@@ -17,8 +17,8 @@ test.describe('Page - Dashboard', () => {
     await page.mouse.move(200, 400)
 
     await expect(page.getByText('Consumo Anual')).toBeVisible()
-    await expect(page.getByText('2021 : 68970.0054639999 MWh')).toBeVisible()
-    await expect(page.getByText('2022 : 69125.77538799998 MWh')).toBeVisible()
+    await expect(page.getByText('2021 : 68.970,005 MWh')).toBeVisible()
+    await expect(page.getByText('2022 : 69.125,775 MWh')).toBeVisible()
   })
 
   test.describe('Hourly Measurement Chart', () => {
@@ -27,31 +27,21 @@ test.describe('Page - Dashboard', () => {
 
       await page.mouse.move(800, 500)
       await expect(page.getByText('31/12 às 4h')).toBeVisible()
-      await expect(page.getByText('113.994852 MWh')).toBeVisible()
+      await expect(page.getByText('113,995 MWh')).toBeVisible()
     })
 
-    test('should filter hourly measurement', async ({ page }) => {
+    test('should change hourly measurement date', async ({ page }) => {
       await page.goto('/dashboard', { waitUntil: 'networkidle' })
 
-      await page.getByRole('button', { name: '31' }).click()
-      await page.getByRole('option', { name: '22' }).click()
+      await page.getByRole('button', { name: 'Dia anterior' }).click()
       await page.waitForLoadState('networkidle')
 
-      await page.getByRole('button', { name: 'Dez' }).click()
-      await page.getByRole('option', { name: 'Out' }).click()
-      await page.waitForLoadState('networkidle')
-
-      await page.getByRole('button', { name: '2022' }).click()
-      await page.getByRole('option', { name: '2021' }).click()
-      await page.waitForLoadState('networkidle')
-
-      await expect(page.getByRole('button', { name: '22' })).toBeVisible()
-      await expect(page.getByRole('button', { name: 'Out' })).toBeVisible()
-      await expect(page.getByRole('button', { name: '2021' })).toBeVisible()
+      await expect(page.getByTestId('single-datepicker')).toHaveValue(
+        /30 de dez\. de 2022/,
+      )
 
       await page.mouse.move(800, 500)
-      await expect(page.getByText('22/10 às 4h')).toBeVisible()
-      await expect(page.getByText('108.689682 MWh')).toBeVisible()
+      await expect(page.getByText('30/12 às 4h')).toBeVisible()
     })
   })
 
@@ -63,7 +53,20 @@ test.describe('Page - Dashboard', () => {
     await expect(page.getByText('Medição Histórica')).toBeVisible()
 
     await page.mouse.move(500, 300)
-    await expect(page.getByText('111.324968')).toBeVisible()
+    await expect(page.getByText('111,325 MWh')).toBeVisible()
+  })
+
+  test('should toggle theme', async ({ page }) => {
+    await page.goto('/dashboard', { waitUntil: 'networkidle' })
+
+    const html = page.locator('html')
+    await expect(html).toHaveClass(/dark/)
+
+    await page.getByTestId('theme-toggle').click()
+    await expect(html).not.toHaveClass(/dark/)
+
+    await page.getByTestId('theme-toggle').click()
+    await expect(html).toHaveClass(/dark/)
   })
 
   test.describe('Measurements Table', () => {

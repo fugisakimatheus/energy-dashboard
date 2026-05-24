@@ -1,9 +1,13 @@
 import {
-  getMonthName,
-  generateMonthNumbers,
+  dateToMeasurementParts,
+  DEFAULT_MEASUREMENT_DATE,
   generateMonthDays,
+  generateMonthNumbers,
   generateMonthsWithNames,
   getAvailableYears,
+  getMonthName,
+  isAllowedMeasurementDate,
+  shiftMeasurementDate,
 } from '../date'
 
 describe('getMonthName', () => {
@@ -71,5 +75,35 @@ describe('generateMonthsWithNames', () => {
 describe('getAvailableYears', () => {
   test('should returns an array of available years', () => {
     expect(getAvailableYears()).toEqual(['2021', '2022'])
+  })
+})
+
+describe('measurement date helpers', () => {
+  test('should allow only 2021 and 2022', () => {
+    expect(isAllowedMeasurementDate(new Date(2022, 11, 31))).toBe(true)
+    expect(isAllowedMeasurementDate(new Date(2020, 0, 1))).toBe(false)
+  })
+
+  test('should shift date within allowed years', () => {
+    const previous = shiftMeasurementDate(DEFAULT_MEASUREMENT_DATE, -1)
+    expect(previous).not.toBeNull()
+    expect(dateToMeasurementParts(previous!)).toEqual({
+      day: '30',
+      month: '12',
+      year: '2022',
+    })
+  })
+
+  test('should return null when shifting outside allowed years', () => {
+    const next = shiftMeasurementDate(new Date(2022, 11, 31), 1)
+    expect(next).toBeNull()
+  })
+
+  test('should convert date to measurement parts', () => {
+    expect(dateToMeasurementParts(new Date(2021, 9, 22))).toEqual({
+      day: '22',
+      month: '10',
+      year: '2021',
+    })
   })
 })

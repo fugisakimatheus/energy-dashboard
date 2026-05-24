@@ -20,7 +20,7 @@ export default function DateRangePicker(props: DateRangePickerProps) {
   }
 
   return (
-    <div className="w-[340px]">
+    <div className="datepicker-root w-full">
       <DatePicker
         data-testid="datepicker"
         dateFormat="dd 'de' MMM'. de' yyyy"
@@ -36,11 +36,11 @@ export default function DateRangePicker(props: DateRangePickerProps) {
         endDate={endDate}
         onChange={value => onChange(value)}
         filterDate={filterDatesToShow}
-        wrapperClassName="w-[340px]"
+        wrapperClassName="datepicker-wrapper"
         calendarClassName="custom-calendar"
-        calendarIconClassname="fill-gray-400"
-        clearButtonClassName="after:!bg-gray-400 after:!text-white after:!font-semibold"
-        className="w-[340px] outline-none border-2 rounded-md border-gray-300 text-sm font-semibold text-gray-600"
+        calendarIconClassname="datepicker-icon"
+        clearButtonClassName="datepicker-clear-btn"
+        className="datepicker-input"
       />
     </div>
   )

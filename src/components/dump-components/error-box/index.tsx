@@ -15,7 +15,7 @@ export default function ErrorBox(props: ErrorBoxProps) {
   const router = useRouter()
 
   const {
-    message = 'Ops! ocorreu um erro ao carregar as informações, tente novamente em instantes.',
+    message = 'Ops! Ocorreu um erro ao carregar as informações. Tente novamente em instantes.',
     height,
     onRetry,
   } = props
@@ -32,16 +32,17 @@ export default function ErrorBox(props: ErrorBoxProps) {
     <div
       data-testid="error-box"
       style={{ height }}
-      className="bg-red-50 flex flex-col items-center justify-center gap-2 mx-4 rounded-md px-8"
+      className="mx-4 flex flex-col items-center justify-center gap-3 rounded-xl border border-danger/30 bg-danger/10 px-8 backdrop-blur-sm"
     >
-      <MdErrorOutline size={32} className="text-red-700" />
-      <span className="text-center text-red-700 font-medium">{message}</span>
+      <MdErrorOutline size={36} className="text-danger" />
+      <span className="text-center text-sm font-medium text-danger-foreground sm:text-base">
+        {message}
+      </span>
 
       <Button
-        radius="sm"
-        color="danger"
+        radius="lg"
         variant="bordered"
-        className="mt-2 border border-red-700 text-red-700 font-medium"
+        className="mt-1 border-danger/50 font-medium text-danger"
         onClick={() => handleRetry()}
       >
         Tentar novamente

@@ -6,7 +6,7 @@ export default function HistoricalMeasurementChartError() {
   return (
     <Card>
       <HistoricalMeasurementChartHeader />
-      <ErrorBox height="290px" />
+      <ErrorBox height="300px" />
     </Card>
   )
 }

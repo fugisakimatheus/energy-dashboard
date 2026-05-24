@@ -17,6 +17,6 @@ describe('Card', () => {
     const component = screen.getByText('Teste 123 Fit')
 
     expect(component).toBeTruthy()
-    expect(component.className.includes('h-fit')).toBeTruthy()
+    expect(component.className.includes('h-auto')).toBeTruthy()
   })
 })

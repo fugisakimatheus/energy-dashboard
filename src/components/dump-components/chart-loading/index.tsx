@@ -1,5 +1,7 @@
 'use client'
 
+import { useMemo } from 'react'
+
 type ChartLoadingProps = {
   colsNumber: number
 }
@@ -7,11 +9,14 @@ type ChartLoadingProps = {
 export default function ChartLoading(props: ChartLoadingProps) {
   const { colsNumber } = props
 
-  function generateRandomNumber() {
-    const randomNumber = Math.random()
-    const intervalNumber = 90 + randomNumber * (240 - 90)
-    return Math.round(intervalNumber)
-  }
+  const barHeights = useMemo(
+    () =>
+      Array.from({ length: colsNumber }, () => {
+        const randomNumber = Math.random()
+        return Math.round(90 + randomNumber * (240 - 90))
+      }),
+    [colsNumber],
+  )
 
   const getClassByColumnNumber = (value: number) => {
     if (value > 14) return 'hidden md:block'
@@ -19,16 +24,19 @@ export default function ChartLoading(props: ChartLoadingProps) {
   }
 
   return (
-    <div className="gap-4 flex flex-row items-end justify-center w-full animate-pulse">
-      {Array.from({ length: colsNumber }, (_, i) => i + 1).map(number => (
+    <div
+      data-testid="chart-loading"
+      className="skeleton-chart flex w-full flex-row items-end justify-center gap-4"
+    >
+      {barHeights.map((height, index) => (
         <div
           data-testid="chart-bar"
-          key={number}
-          style={{ height: `${generateRandomNumber()}px` }}
+          key={index}
+          style={{ height: `${height}px` }}
           className={`${getClassByColumnNumber(
-            number,
-          )} w-[15px] bg-gray-200 rounded-sm`}
-        ></div>
+            index + 1,
+          )} skeleton-block w-[15px]`}
+        />
       ))}
     </div>
   )

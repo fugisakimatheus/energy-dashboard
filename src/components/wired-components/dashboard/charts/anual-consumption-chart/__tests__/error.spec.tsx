@@ -14,9 +14,7 @@ describe('AnualConsumptionChartError', () => {
       ),
     ).toBeTruthy()
     expect(
-      screen.getByText(
-        'Ops! ocorreu um erro ao carregar as informações, tente novamente em instantes.',
-      ),
+      screen.getByText(/Ops! Ocorreu um erro ao carregar as informações/i),
     ).toBeTruthy()
   })
 })

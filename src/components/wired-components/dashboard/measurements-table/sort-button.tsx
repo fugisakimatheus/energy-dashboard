@@ -39,19 +39,19 @@ export default function SortButton(props: SortButtonProps) {
 
   return (
     <div
-      className="flex flex-row items-center gap-1.5 cursor-pointer"
+      className="flex cursor-pointer flex-row items-center gap-1.5 text-foreground"
       onClick={() => handleSort()}
     >
       {children}
       <div className="flex flex-col items-center justify-center text-xs">
         {canShowUpArrow && (
-          <div className="rotate-90 -mb-1">
-            <MdArrowBackIos size={10} className="text-gray-700" />
+          <div className="-mb-1 rotate-90">
+            <MdArrowBackIos size={10} className="text-muted-foreground" />
           </div>
         )}
         {canShowDownArrow && (
           <div className="rotate-90">
-            <MdArrowForwardIos size={10} className="text-gray-700" />
+            <MdArrowForwardIos size={10} className="text-muted-foreground" />
           </div>
         )}
       </div>

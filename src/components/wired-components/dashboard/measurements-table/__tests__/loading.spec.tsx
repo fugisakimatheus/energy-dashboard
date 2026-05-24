@@ -12,7 +12,7 @@ describe('TableLoading', () => {
     expect(screen.getByText('Ponto')).toBeTruthy()
     expect(screen.getByText('Data')).toBeTruthy()
     expect(screen.getByText('Hora')).toBeTruthy()
-    expect(screen.getByText('Consumo Ativo (MWh)')).toBeTruthy()
+    expect(screen.getByText('Consumo (MWh)')).toBeTruthy()
     expect(screen.getByText('Origem')).toBeTruthy()
   })
 })

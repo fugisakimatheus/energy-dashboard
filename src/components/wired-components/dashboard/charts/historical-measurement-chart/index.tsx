@@ -11,41 +11,39 @@ type LastWeekConsumptionChartData = {
 }
 
 export default async function HistoricalMeasurementChart() {
-  const lastWeekMeasurements = await MeasurementService.search({
-    filters: {
-      year_lte: '2022',
-      month_lte: '12',
-      day_lte: '31',
-      year_gte: '2022',
-      month_gte: '12',
-      day_gte: '24',
-    },
-  })
+  try {
+    const lastWeekMeasurements = await MeasurementService.search({
+      filters: {
+        year_lte: '2022',
+        month_lte: '12',
+        day_lte: '31',
+        year_gte: '2022',
+        month_gte: '12',
+        day_gte: '24',
+      },
+    })
 
-  if (typeof lastWeekMeasurements === 'string') {
+    if (typeof lastWeekMeasurements === 'string') {
+      return <HistoricalMeasurementChartError />
+    }
+
+    if (lastWeekMeasurements.length === 0) {
+      return <HistoricalMeasurementChartNoData />
+    }
+
+    const lastWeekData: LastWeekConsumptionChartData[] =
+      lastWeekMeasurements.map(({ day, month, consumption }) => ({
+        label: `${day}/${month}`,
+        value: consumption,
+      }))
+
+    return (
+      <Card>
+        <HistoricalMeasurementChartHeader />
+        <HistoricalMeasurementChartWrapper data={lastWeekData} />
+      </Card>
+    )
+  } catch {
     return <HistoricalMeasurementChartError />
   }
-
-  if (lastWeekMeasurements.length === 0) {
-    return <HistoricalMeasurementChartNoData />
-  }
-
-  const lastWeekData: LastWeekConsumptionChartData[] = lastWeekMeasurements.map(
-    ({ day, month, consumption }) => ({
-      label: `${day}/${month}`,
-      value: consumption,
-    }),
-  )
-
-  return (
-    <Card>
-      <HistoricalMeasurementChartHeader />
-
-      <div className="w-full h-full max-h-[290px] px-2">
-        <HistoricalMeasurementChartWrapper
-          data={lastWeekData}
-        ></HistoricalMeasurementChartWrapper>
-      </div>
-    </Card>
-  )
 }

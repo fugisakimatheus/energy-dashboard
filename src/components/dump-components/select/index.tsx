@@ -22,12 +22,17 @@ export default function Select(props: SelectProps) {
       data-testid="select-component"
       variant="bordered"
       size="sm"
-      color="primary"
-      classNames={{ value: 'font-bold' }}
+      radius="lg"
+      classNames={{
+        trigger:
+          'border-border/40 bg-surface/60 data-[hover=true]:bg-surface/80',
+        value: 'font-medium text-foreground',
+        popoverContent: 'border border-border/40 bg-card',
+      }}
       {...rest}
     >
       {options.map(({ label, value }) => (
-        <SelectItem key={value} value={value} color="primary">
+        <SelectItem key={value} value={value}>
           {label}
         </SelectItem>
       ))}

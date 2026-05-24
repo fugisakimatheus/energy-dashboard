@@ -2,23 +2,22 @@
 
 import Card from '@/components/dump-components/card'
 import ChartLoading from '@/components/dump-components/chart-loading'
-import Select from '@/components/dump-components/select'
+import ErrorBox from '@/components/dump-components/error-box'
+import NoDataBox from '@/components/dump-components/no-data-box'
 import { useMeasurementStore } from '@/store/measurement-store'
 import {
-  generateMonthDays,
-  generateMonthsWithNames,
-  getAvailableYears,
+  dateToMeasurementParts,
+  DEFAULT_MEASUREMENT_DATE,
 } from '@/utils/date'
 import { useCallback, useEffect, useState } from 'react'
 import HourlyMeasurementChartWrapper from './chart'
 import HourlyMeasurementChartHeader from './header'
-import ErrorBox from '@/components/dump-components/error-box'
-import NoDataBox from '@/components/dump-components/no-data-box'
+import HourlyPeriodFilter from './period-filter'
+
+const CHART_AREA_HEIGHT = 320
 
 export default function HourlyMeasurementChart() {
-  const [selectedDay, setSelectedDay] = useState<string>('31')
-  const [selectedMonth, setSelectedMonth] = useState<string>('12')
-  const [selectedYear, setSelectedYear] = useState<string>('2022')
+  const [selectedDate, setSelectedDate] = useState(DEFAULT_MEASUREMENT_DATE)
 
   const getHourlyMeasurements = useMeasurementStore(
     state => state.getHourlyMeasurements,
@@ -28,18 +27,26 @@ export default function HourlyMeasurementChart() {
     state => state.hourlyMeasurements.data,
   )
 
-  const isLoading = status === 'loading'
+  const isLoading = status === 'loading' || status === 'pristine'
   const isError = status === 'error'
   const isSuccess = status === 'success'
   const hasData = hourlyMeasurements.length > 0
 
-  const handleGetHourlyMeasurements = useCallback(() => {
-    getHourlyMeasurements(selectedDay, selectedMonth, selectedYear)
-  }, [getHourlyMeasurements, selectedDay, selectedMonth, selectedYear])
+  const fetchForDate = useCallback(
+    (date: Date) => {
+      const { day, month, year } = dateToMeasurementParts(date)
+      getHourlyMeasurements(day, month, year)
+    },
+    [getHourlyMeasurements],
+  )
 
   useEffect(() => {
-    handleGetHourlyMeasurements()
-  }, [handleGetHourlyMeasurements])
+    fetchForDate(selectedDate)
+  }, [fetchForDate, selectedDate])
+
+  const handleDateChange = (date: Date) => {
+    setSelectedDate(date)
+  }
 
   const hourlyData = hourlyMeasurements.map(measurement => ({
     label: `${measurement.day}/${measurement.month} às ${measurement.hour}h`,
@@ -49,7 +56,10 @@ export default function HourlyMeasurementChart() {
   const renderChart = () => {
     if (isLoading) {
       return (
-        <div className="pt-7 w-full h-full items-center justify-center px-2">
+        <div
+          className="flex w-full items-end justify-center px-2"
+          style={{ height: CHART_AREA_HEIGHT }}
+        >
           <ChartLoading colsNumber={15} />
         </div>
       )
@@ -57,63 +67,38 @@ export default function HourlyMeasurementChart() {
     if (isError) {
       return (
         <ErrorBox
-          height="320px"
-          onRetry={() => handleGetHourlyMeasurements()}
+          height={CHART_AREA_HEIGHT}
+          onRetry={() => fetchForDate(selectedDate)}
         />
       )
     }
     if (!hasData && isSuccess) {
-      return <NoDataBox height="320px" />
+      return <NoDataBox height={CHART_AREA_HEIGHT} />
     }
     return (
-      <div className="w-full h-full max-h-[320px] px-2">
-        <HourlyMeasurementChartWrapper
-          maxFlex={110}
-          minFlex={90}
-          flatConsumption={100}
-          data={hourlyData}
-        />
-      </div>
+      <HourlyMeasurementChartWrapper
+        maxFlex={110}
+        minFlex={90}
+        flatConsumption={100}
+        data={hourlyData}
+      />
     )
   }
 
   return (
     <Card>
-      <HourlyMeasurementChartHeader />
-
-      <div className="px-4 w-full flex flex-row items-center mb-6 gap-3 sm:gap-5 md:gap-16">
-        <Select
-          defaultSelectedKeys={[selectedDay]}
-          disallowEmptySelection
-          onChange={e => setSelectedDay(e.target.value)}
-          options={generateMonthDays().map(day => ({ label: day, value: day }))}
-          aria-label="Day select field"
-        />
-        <Select
-          defaultSelectedKeys={[selectedMonth]}
-          disallowEmptySelection
-          onChange={e => setSelectedMonth(e.target.value)}
-          options={generateMonthsWithNames().map(
-            ({ monthName, monthNumber }) => ({
-              label: monthName,
-              value: monthNumber,
-            }),
-          )}
-          aria-label="Month select field"
-        />
-        <Select
-          defaultSelectedKeys={[selectedYear]}
-          disallowEmptySelection
-          onChange={e => setSelectedYear(e.target.value)}
-          options={getAvailableYears().map(year => ({
-            label: year,
-            value: year,
-          }))}
-          aria-label="Year select field"
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <HourlyMeasurementChartHeader />
+        <HourlyPeriodFilter
+          selectedDate={selectedDate}
+          onDateChange={handleDateChange}
+          isLoading={isLoading}
         />
       </div>
 
-      {renderChart()}
+      <div className={isLoading ? 'opacity-60 transition-opacity' : ''}>
+        {renderChart()}
+      </div>
     </Card>
   )
 }

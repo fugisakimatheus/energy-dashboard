@@ -2,13 +2,168 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-  background-color: #F7FAFC !important;
+@layer base {
+  :root {
+    --background: 241 245 249;
+    --foreground: 15 23 42;
+    --card: 255 255 255;
+    --card-foreground: 15 23 42;
+    --muted: 100 116 139;
+    --muted-foreground: 100 116 139;
+    --border: 203 213 225;
+    --accent: 79 70 229;
+    --accent-secondary: 13 148 136;
+    --danger: 220 38 38;
+    --danger-foreground: 153 27 27;
+    --info: 37 99 235;
+    --info-foreground: 29 78 216;
+    --skeleton: 226 232 240;
+    --gradient-from: 248 250 252;
+    --gradient-via: 241 245 249;
+    --gradient-to: 236 242 248;
+    --card-glow: 99 102 241;
+    --surface: 255 255 255;
+  }
+
+  .dark {
+    --background: 10 12 18;
+    --foreground: 248 250 252;
+    --card: 18 22 32;
+    --card-foreground: 248 250 252;
+    --muted: 100 116 139;
+    --muted-foreground: 148 163 184;
+    --border: 38 46 62;
+    --accent: 129 140 248;
+    --accent-secondary: 45 212 191;
+    --danger: 248 113 113;
+    --danger-foreground: 254 202 202;
+    --info: 96 165 250;
+    --info-foreground: 191 219 254;
+    --skeleton: 38 46 62;
+    --gradient-from: 10 12 18;
+    --gradient-via: 14 18 28;
+    --gradient-to: 18 22 34;
+    --card-glow: 99 102 241;
+    --surface: 22 27 40;
+  }
+}
+
+html {
+  min-height: 100%;
+  color-scheme: light;
+  background-color: rgb(var(--background));
+  background-image:
+    radial-gradient(
+      ellipse 90% 60% at 50% -10%,
+      rgb(var(--card-glow) / 0.14),
+      transparent 55%
+    ),
+    linear-gradient(
+      180deg,
+      rgb(var(--gradient-from)) 0%,
+      rgb(var(--gradient-via)) 45%,
+      rgb(var(--gradient-to)) 100%
+    );
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+html.dark {
+  color-scheme: dark;
+  background-image:
+    radial-gradient(
+      ellipse 90% 55% at 50% -8%,
+      rgb(var(--card-glow) / 0.1),
+      transparent 50%
+    ),
+    linear-gradient(
+      180deg,
+      rgb(var(--gradient-from)) 0%,
+      rgb(var(--gradient-via)) 50%,
+      rgb(var(--gradient-to)) 100%
+    );
 }
 
 body {
-  max-width: 1440px !important;
-  margin: 0 auto !important;
-  float: none !important;
-  overflow: auto;
+  min-height: 100%;
+  margin: 0;
+  color: rgb(var(--foreground));
+  background: transparent;
+}
+
+.page-shell {
+  width: 100%;
+  max-width: 1440px;
+  min-height: 100dvh;
+  margin-inline: auto;
+}
+
+@layer utilities {
+  .glass-card {
+    @apply rounded-2xl border shadow-lg backdrop-blur-md;
+    border-color: rgb(var(--border) / 0.5);
+    background: linear-gradient(
+      165deg,
+      rgb(var(--surface) / 0.95) 0%,
+      rgb(var(--card) / 0.88) 100%
+    );
+    box-shadow:
+      0 4px 20px rgb(15 23 42 / 0.06),
+      inset 0 1px 0 rgb(255 255 255 / 0.5);
+  }
+
+  .dark .glass-card {
+    border-color: rgb(var(--border) / 0.55);
+    background: linear-gradient(
+      165deg,
+      rgb(var(--surface) / 0.98) 0%,
+      rgb(var(--card) / 0.95) 100%
+    );
+    box-shadow:
+      0 8px 32px rgb(0 0 0 / 0.45),
+      inset 0 1px 0 rgb(255 255 255 / 0.04);
+  }
+
+  .dark .filter-bar {
+    background: rgb(var(--surface) / 0.7);
+    border-color: rgb(var(--border) / 0.5);
+  }
+
+  .dark .table-shell {
+    background: rgb(var(--surface) / 0.55);
+    border-color: rgb(var(--border) / 0.45);
+  }
+
+  .filter-bar {
+    @apply rounded-xl border px-4 py-3;
+    border-color: rgb(var(--border) / 0.4);
+    background: rgb(var(--surface) / 0.5);
+  }
+
+  .table-shell {
+    @apply overflow-hidden rounded-xl border;
+    border-color: rgb(var(--border) / 0.35);
+    background: rgb(var(--surface) / 0.35);
+  }
+
+  .skeleton-block {
+    @apply rounded-md bg-skeleton;
+    animation: skeleton-pulse 1.8s ease-in-out infinite;
+  }
+
+  .skeleton-line {
+    @apply rounded-md bg-skeleton;
+    animation: skeleton-pulse 1.8s ease-in-out infinite;
+  }
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
 }

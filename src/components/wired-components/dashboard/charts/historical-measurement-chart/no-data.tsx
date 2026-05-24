@@ -6,7 +6,7 @@ export default function HistoricalMeasurementChartNoData() {
   return (
     <Card>
       <HistoricalMeasurementChartHeader />
-      <NoDataBox height="290px" />
+      <NoDataBox height="300px" />
     </Card>
   )
 }

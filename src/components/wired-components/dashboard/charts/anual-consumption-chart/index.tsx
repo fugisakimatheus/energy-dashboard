@@ -25,70 +25,72 @@ export default async function AnualConsumptionChart() {
     { field: 'month', direction: 'asc' },
   ]
 
-  const lastYearMeasurements = await MeasurementService.search(
-    { filters: { year: lastYear }, sorts },
-    { cache: 'no-store' },
-  )
+  try {
+    const [lastYearMeasurements, currentYearMeasurements] = await Promise.all([
+      MeasurementService.search(
+        { filters: { year: lastYear }, sorts },
+        { cache: 'no-store' },
+      ),
+      MeasurementService.search(
+        { filters: { year: currentYear }, sorts },
+        { cache: 'no-store' },
+      ),
+    ])
 
-  const currentYearMeasurements = await MeasurementService.search(
-    { filters: { year: currentYear }, sorts },
-    { cache: 'no-store' },
-  )
+    if (
+      typeof lastYearMeasurements === 'string' ||
+      typeof currentYearMeasurements === 'string'
+    ) {
+      return <AnualConsumptionChartError />
+    }
 
-  if (
-    typeof lastYearMeasurements === 'string' ||
-    typeof currentYearMeasurements === 'string'
-  ) {
-    return <AnualConsumptionChartError />
-  }
+    if (
+      lastYearMeasurements.length === 0 &&
+      currentYearMeasurements.length === 0
+    ) {
+      return <AnualConsumptionChartNoData />
+    }
 
-  if (
-    lastYearMeasurements.length === 0 &&
-    currentYearMeasurements.length === 0
-  ) {
-    return <AnualConsumptionChartNoData />
-  }
+    const lastYearConsumptions =
+      groupMeasurementsConsumptionByMonths(lastYearMeasurements)
 
-  const lastYearConsumptions =
-    groupMeasurementsConsumptionByMonths(lastYearMeasurements)
+    const currentYearConsumption = groupMeasurementsConsumptionByMonths(
+      currentYearMeasurements,
+    )
 
-  const currentYearConsumption = groupMeasurementsConsumptionByMonths(
-    currentYearMeasurements,
-  )
+    const anualData = generateMonthNumbers().reduce<AnualConsumptionChartData[]>(
+      (list, month) => {
+        const lastYearMonth = lastYearConsumptions.find(
+          measurement => measurement.month === month,
+        )
+        const currentYearMonth = currentYearConsumption.find(
+          measurement => measurement.month === month,
+        )
 
-  const anualData = generateMonthNumbers().reduce<AnualConsumptionChartData[]>(
-    (list, month) => {
-      const lastYearMonth = lastYearConsumptions.find(
-        measurement => measurement.month === month,
-      )
-      const currentYearMonth = currentYearConsumption.find(
-        measurement => measurement.month === month,
-      )
+        list.push({
+          label: getMonthName(month),
+          lastYear,
+          currentYear,
+          lastYearValue: lastYearMonth?.monthlyConsumptionTotal ?? 0,
+          currentYearValue: currentYearMonth?.monthlyConsumptionTotal ?? 0,
+        })
 
-      list.push({
-        label: getMonthName(month),
-        lastYear,
-        currentYear,
-        lastYearValue: lastYearMonth?.monthlyConsumptionTotal ?? 0,
-        currentYearValue: currentYearMonth?.monthlyConsumptionTotal ?? 0,
-      })
+        return list
+      },
+      [],
+    )
 
-      return list
-    },
-    [],
-  )
-
-  return (
-    <Card>
-      <AnualConsumptionChartHeader />
-
-      <div className="w-full h-full max-h-[330px] px-2">
+    return (
+      <Card>
+        <AnualConsumptionChartHeader />
         <AnualConsumptionChartWrapper
           data={anualData}
           lastYear={lastYear}
           currentYear={currentYear}
         />
-      </div>
-    </Card>
-  )
+      </Card>
+    )
+  } catch {
+    return <AnualConsumptionChartError />
+  }
 }
